@@ -28,7 +28,7 @@ import com.joyfulmongo.controller.JFSignupOutput;
 import com.joyfulmongo.controller.JFUpdateInput;
 import com.joyfulmongo.controller.JFUpdateOutput;
 
-@Path("/2")
+@Path("/program")
 public class ParseProgramResources extends BaseResource
 {
   private static Logger LOGGER = Logger.getLogger(ParseProgramResources.class.getName());

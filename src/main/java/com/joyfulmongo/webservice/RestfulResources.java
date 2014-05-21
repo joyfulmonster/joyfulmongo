@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
  * @author wbao
  *
  */
-@Path("/1")
-public class ParseRestfulResources extends BaseResource
+@Path("/rest")
+public class RestfulResources extends BaseResource
 {
   @Path("users")
   @POST
