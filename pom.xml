@@ -4,7 +4,8 @@
 
     <packaging>war</packaging>
     <version>1.0</version>
-    <name>joyfulmongo</name>
+    <name>core</name>
+    <groupId>joyfulmongo</groupId>
     <artifactId>joyfulmongo</artifactId>
 
     <dependencies>
