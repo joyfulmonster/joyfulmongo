@@ -1,4 +1,22 @@
-JoyfulMongo
+# Joyful Mongo
 =========
 
-A restful mongo server integrated with ElasticSearch.
+## Introduction
+
+## API
+
+### Database
+
+### Users
+
+### Roles
+
+### Collections
+
+### Queries
+
+### Search
+
+## Deployment Option
+
+## Features on the road
