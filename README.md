@@ -12,6 +12,9 @@
 
 ### Database
 
+* GET /db                  query dbs
+* POST /db/{databaseName}  create a db
+
 ### Users
 
 ### Roles
