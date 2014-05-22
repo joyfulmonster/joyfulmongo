@@ -12,6 +12,9 @@
 
 ### Database
 
+* GET /database
+* POST /database
+
 ### Users
 
 ### Roles
