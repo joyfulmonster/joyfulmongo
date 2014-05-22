@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 @Path("/rest")
 public class RestfulResources extends BaseResource
 {
-  @Path("users")
+  @Path("user")
   @POST
   @Consumes(Constants.JF_JSON)
   @Produces({ Constants.JF_JSON })
