@@ -8,23 +8,3 @@
  to AWS EC2 within minutes.
 * Joyful Mongo provides integration with ElasticSearch and provide Lucene based query capability.
 
-## API
-
-### Database
-
-* GET /db                  query dbs
-* POST /db/{databaseName}  create a db
-
-### Users
-
-### Roles
-
-### Collections
-
-### Queries
-
-### Search
-
-## Deployment Option
-
-## Features on the road
