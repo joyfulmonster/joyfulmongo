@@ -14,7 +14,7 @@
  * limitations under the License.
  *
 */
-package com.joyfulmonster.parse.test;
+package com.joyfulmonster.webservice;
 
 import com.joyfulmongo.webservice.ParseProgramResources;
 import org.glassfish.jersey.server.ResourceConfig;

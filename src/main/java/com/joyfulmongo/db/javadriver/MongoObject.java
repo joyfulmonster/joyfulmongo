@@ -22,18 +22,18 @@ import org.json.JSONObject;
 import com.mongodb.DBObject;
 
 @SuppressWarnings("serial")
-public class JFDBObject
+public class MongoObject
 {
   private String collectionName;
   private DBObject dbObject;
   
-  public JFDBObject(String collection, JSONObject json)
+  public MongoObject(String collection, JSONObject json)
   {
     collectionName = collection;
-    dbObject = JFDBUtil.toDBObject(json);
+    dbObject = MongoDBUtil.toDBObject(json);
   }
   
-  public JFDBObject(String collection, DBObject obj)
+  public MongoObject(String collection, DBObject obj)
   {
     collectionName = collection;
     dbObject = obj;
@@ -41,7 +41,7 @@ public class JFDBObject
   
   public JSONObject toJson()
   {
-    JSONObject result = JFDBUtil.toJSONObject(dbObject);
+    JSONObject result = MongoDBUtil.toJSONObject(dbObject);
     return result;
   }
   

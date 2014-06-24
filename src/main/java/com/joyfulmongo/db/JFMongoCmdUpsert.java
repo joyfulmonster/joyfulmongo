@@ -18,10 +18,9 @@ package com.joyfulmongo.db;
 
 import java.util.Date;
 
+import com.joyfulmongo.db.javadriver.MongoCollection;
+import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
-
-import com.joyfulmongo.db.javadriver.JFDBCollection;
-import com.joyfulmongo.db.javadriver.JFDBCollectionFactory;
 
 class JFMongoCmdUpsert extends JFMongoCmd
 {
@@ -49,7 +48,7 @@ class JFMongoCmdUpsert extends JFMongoCmd
     Date now = Utils.getCurrentTime();
     updates.put(Constants.Props.updatedAt.toString(), now);
     
-    JFDBCollection collection = JFDBCollectionFactory.getInstance()
+    MongoCollection collection = MongoCollectionFactory.getInstance()
         .getCollection(colname);
     collection.upsert(query, updates);
     

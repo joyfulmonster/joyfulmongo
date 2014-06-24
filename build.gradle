@@ -12,31 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
-*/
+ */
 
-package com.joyfulmongo.db.javadriver;
+apply plugin: 'java'
 
-@SuppressWarnings("serial")
-public class JFDBUserException extends RuntimeException
-{
-  private int code;
-  private String error;
-  
-  public JFDBUserException(int code, String error)
-  {
-    super(error);
-    this.code = code;
-    this.error = error;
-  }
-  
-  public int getCode()
-  {
-    return this.code;
-  }
-  
-  public String getError()
-  {
-    return this.error;
-  }
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    compile 'org.mongodb:mongo-java-driver:3.0.0-SNAPSHOT'
 }

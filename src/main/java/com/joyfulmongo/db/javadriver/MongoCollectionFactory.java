@@ -22,31 +22,31 @@ import com.joyfulmongo.db.javadriver.client.JFMongoClientFactory;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
-public class JFDBCollectionFactory
+public class MongoCollectionFactory
 {
-  private static JFDBCollectionFactory sInstance;
+  private static MongoCollectionFactory sInstance;
   
-  public static JFDBCollectionFactory getInstance()
+  public static MongoCollectionFactory getInstance()
   {
     if (sInstance == null)
     {
-      sInstance = new JFDBCollectionFactory();
+      sInstance = new MongoCollectionFactory();
     }
     return sInstance;
   }
   
   private DB db;
   
-  private JFDBCollectionFactory()
+  private MongoCollectionFactory()
   {
     JFMongoClient client = JFMongoClientFactory.getInstance();
     db = client.getMongoDB();
   }
   
-  public JFDBCollection getCollection(String name)
+  public MongoCollection getCollection(String name)
   {
     DBCollection collection = db.getCollection(name);
     
-    return new JFDBCollection(name, collection);
+    return new MongoCollection(name, collection);
   }
 }

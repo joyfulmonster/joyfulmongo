@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.joyfulmongo.db.javadriver.MongoObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.joyfulmongo.db.javadriver.JFDBObject;
 
 public class JFMongoObject
 {
@@ -45,7 +44,7 @@ public class JFMongoObject
     this.mObj = payload;
   }
   
-  public JFMongoObject(String collection, JFDBObject obj)
+  public JFMongoObject(String collection, MongoObject obj)
   {
     this.colname = collection;
     mObj = obj.toJson();

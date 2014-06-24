@@ -18,10 +18,9 @@ package com.joyfulmongo.db;
 
 import java.util.Date;
 
+import com.joyfulmongo.db.javadriver.MongoCollection;
+import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
-
-import com.joyfulmongo.db.javadriver.JFDBCollection;
-import com.joyfulmongo.db.javadriver.JFDBCollectionFactory;
 
 public class JFMongoCmdDelete extends JFMongoCmd
 {
@@ -51,7 +50,7 @@ public class JFMongoCmdDelete extends JFMongoCmd
     String timeStr = Utils.getParseDateFormat().format(now);
     mObj.put(Constants.Props.updatedAt.toString(), timeStr);
     
-    JFDBCollection collection = JFDBCollectionFactory.getInstance().getCollection(collectionName);
+    MongoCollection collection = MongoCollectionFactory.getInstance().getCollection(collectionName);
     collection.delete(mObj);
     
     JFMongoCmdResult result = new JFMongoCmdResult();

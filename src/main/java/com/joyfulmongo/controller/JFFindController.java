@@ -39,9 +39,14 @@ public class JFFindController extends JFController<JFFindInput, JFFindOutput>
     
     String redirectClassNameForKey = input.getRedirectClassNameForKey();
     
-    JFMongoCmdQuery query = new JFMongoCmdQuery.Builder(colName)
-        .constraints(condition).limit(limit).skip(skip).include(includes)
-        .sort(sort).redirectClassNameForKey(redirectClassNameForKey).build();
+    JFMongoCmdQuery query = new JFMongoCmdQuery.Builder(colName).
+            constraints(condition).
+            limit(limit).
+            skip(skip).
+            include(includes).
+            sort(sort).
+            redirectClassNameForKey(redirectClassNameForKey).
+            build();
     
     List<JFMongoObject> results = query.find();
     

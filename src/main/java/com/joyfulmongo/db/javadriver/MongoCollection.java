@@ -33,15 +33,15 @@ import com.mongodb.DBObject;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
-public class JFDBCollection
+public class MongoCollection
 {
-  protected static Logger LOGGER = Logger.getLogger(JFDBCollection.class
+  protected static Logger LOGGER = Logger.getLogger(MongoCollection.class
       .getName());
   
   private String colName;
   private DBCollection dbCollection;
   
-  JFDBCollection(String name, DBCollection collection)
+  MongoCollection(String name, DBCollection collection)
   {
     this.colName = name;
     this.dbCollection = collection;
@@ -53,7 +53,7 @@ public class JFDBCollection
   
   public void create(JSONObject creates)
   {
-    JFDBObject newDBObj = new JFDBObject(colName, creates);
+    MongoObject newDBObj = new MongoObject(colName, creates);
     
     DBObject dbObject = newDBObj.getDBObject();
         
@@ -91,7 +91,7 @@ public class JFDBCollection
     
     this.ensure2DIndexIfExist(updates);
     
-    JFDBObject queryObj = new JFDBObject(colName, query);
+    MongoObject queryObj = new MongoObject(colName, query);
     DBObject queryDBObject = queryObj.getDBObject();
     
     WriteResult result = null;
@@ -102,7 +102,7 @@ public class JFDBCollection
       }
       JSONObject updateInstruction = new JSONObject();
       updateInstruction.put("$set", updates);
-      JFDBObject jfObj = new JFDBObject(colName, updateInstruction);
+      MongoObject jfObj = new MongoObject(colName, updateInstruction);
       DBObject updateDBObject = jfObj.getDBObject();
       
       result = dbCollection.update(queryDBObject, updateDBObject, false, false, WriteConcern.SAFE);
@@ -110,7 +110,7 @@ public class JFDBCollection
     
     if (extraInstruction != null)
     {
-      JFDBObject jfObj = new JFDBObject(colName, extraInstruction);
+      MongoObject jfObj = new MongoObject(colName, extraInstruction);
       DBObject updateInstructionObject = jfObj.getDBObject();
       result = dbCollection.update(queryDBObject, updateInstructionObject,
           false, false, WriteConcern.SAFE);
@@ -121,10 +121,10 @@ public class JFDBCollection
   
   public void upsert(JSONObject query, JSONObject updates)
   {
-    JFDBObject queryObj = new JFDBObject(colName, query);
+    MongoObject queryObj = new MongoObject(colName, query);
     DBObject queryDBObject = queryObj.getDBObject();
       
-    JFDBObject jfObj = new JFDBObject(colName, updates);
+    MongoObject jfObj = new MongoObject(colName, updates);
     DBObject updateDBObject = jfObj.getDBObject();
       
     DBObject oldValue = dbCollection.findAndModify(queryDBObject, null, null,

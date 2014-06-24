@@ -27,12 +27,12 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import com.joyfulmongo.db.javadriver.MongoObject;
+import com.joyfulmongo.db.javadriver.MongoQuery;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.joyfulmongo.controller.JFCConstants;
-import com.joyfulmongo.db.javadriver.JFDBObject;
-import com.joyfulmongo.db.javadriver.JFDBQuery;
 
 public class JFMongoCmdQuery extends JFMongoCmd
 {
@@ -41,12 +41,12 @@ public class JFMongoCmdQuery extends JFMongoCmd
   public static Integer S_DEFAULT_SKIP = 0;
   public static Integer S_DEFAULT_LIMIT = 100;
   
-  private JFDBQuery query;
+  private MongoQuery query;
   private String collectionName;
   private String[] includeFields;
   private String redirectClassname;
   
-  private JFMongoCmdQuery(String colname, JFDBQuery dbquery,
+  private JFMongoCmdQuery(String colname, MongoQuery dbquery,
                           String redirectClassname)
   {
     this.collectionName = colname;
@@ -85,7 +85,7 @@ public class JFMongoCmdQuery extends JFMongoCmd
   
   public List<JFMongoObject> find()
   {
-    List<JFDBObject> objs = query.find();
+    List<MongoObject> objs = query.find();
     
     Map<String, ContainerObjectRelation> relationKeyToClassnameMap = getRelationKeyToClassnameMap();
     
@@ -94,7 +94,7 @@ public class JFMongoCmdQuery extends JFMongoCmd
     Map<String, LinkedHashMap<String, List<JFMongoObject>>> includeKeyToParentObjectMap = initPointerMap();
     Map<String, String> includeKeyToPointerColnameMap = new HashMap<String, String>(0);
     
-    for (JFDBObject obj : objs)
+    for (MongoObject obj : objs)
     {
       JFMongoObject parseObj = new JFMongoObject(this.collectionName, obj);
       
@@ -122,16 +122,16 @@ public class JFMongoCmdQuery extends JFMongoCmd
   
   private Map<String, ContainerObjectRelation> getRelationKeyToClassnameMap()
   {
-    JFDBQuery.Builder distinctRelKeyQuery = new JFDBQuery.Builder(JFMongoRelationshipMetadata.S_METADATA_COLLNAME);
+    MongoQuery.Builder distinctRelKeyQuery = new MongoQuery.Builder(JFMongoRelationshipMetadata.S_METADATA_COLLNAME);
     JSONObject constraints = new JSONObject();
     constraints.put(JFMongoRelationshipMetadata.Props.relClassName.toString(), this.collectionName);
     distinctRelKeyQuery.constraints(constraints);
     
-    JFDBQuery query = distinctRelKeyQuery.build();
-    List<JFDBObject> objs = query.find();
+    MongoQuery query = distinctRelKeyQuery.build();
+    List<MongoObject> objs = query.find();
     
     Map<String, ContainerObjectRelation> result = new HashMap<String, ContainerObjectRelation>(0);
-    for (JFDBObject obj : objs)
+    for (MongoObject obj : objs)
     {
       JSONObject json = obj.toJson();
       String key = json.getString(JFMongoRelationshipMetadata.Props.relKey.toString());
@@ -229,8 +229,8 @@ public class JFMongoCmdQuery extends JFMongoCmd
   
   public static class Builder
   {
-    private String colname;
-    private JFDBQuery.Builder dbQueryBuilder;
+    private String collectionName;
+    private MongoQuery.Builder dbQueryBuilder;
     private JSONObject constraints;
     private List<String> includes;
     private List<String> projections;
@@ -241,17 +241,17 @@ public class JFMongoCmdQuery extends JFMongoCmd
     private String redirectClassNameForKey;
     private String redirectClassName;
     
-    public Builder(String colname)
+    public Builder(String collectionName)
     {
-      if (colname == null || colname.length() == 0)
+      if (collectionName == null || collectionName.length() == 0)
       {
         throw new IllegalArgumentException(
             "Collection name can not be null or zero length");
       }
       
-      dbQueryBuilder = new JFDBQuery.Builder(colname);
+      dbQueryBuilder = new MongoQuery.Builder(collectionName);
       
-      this.colname = colname;
+      this.collectionName = collectionName;
       this.constraints = new JSONObject();
       this.projections = new ArrayList<String>(0);
       this.projectionsExclude = new ArrayList<String>(0);
@@ -266,12 +266,12 @@ public class JFMongoCmdQuery extends JFMongoCmd
     public void collection(String colname)
     {
       this.dbQueryBuilder.collection(colname);
-      this.colname = colname;
+      this.collectionName = colname;
     }
     
     public String getCollection()
     {
-      return this.colname;
+      return this.collectionName;
     }
     
     public Builder projection(String... fields)
@@ -442,9 +442,8 @@ public class JFMongoCmdQuery extends JFMongoCmd
       dbQueryBuilder.skip(theBuilder.getSkip());
       dbQueryBuilder.sort(theBuilder.getSort());
       
-      JFDBQuery dbquery = dbQueryBuilder.build();
-      JFMongoCmdQuery query = new JFMongoCmdQuery(colname, dbquery,
-          redirectClassName);
+      MongoQuery dbquery = dbQueryBuilder.build();
+      JFMongoCmdQuery query = new JFMongoCmdQuery(collectionName, dbquery, redirectClassName);
       query.setIncludeFields(theBuilder.getIncludes());
       return query;
     }

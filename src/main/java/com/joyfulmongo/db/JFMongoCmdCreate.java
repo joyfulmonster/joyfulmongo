@@ -19,11 +19,10 @@ package com.joyfulmongo.db;
 import java.util.Date;
 import java.util.List;
 
+import com.joyfulmongo.db.javadriver.MongoCollection;
+import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.JSONObject;
-
-import com.joyfulmongo.db.javadriver.JFDBCollection;
-import com.joyfulmongo.db.javadriver.JFDBCollectionFactory;
 
 public class JFMongoCmdCreate extends JFMongoCmd
 {
@@ -86,7 +85,7 @@ public class JFMongoCmdCreate extends JFMongoCmd
     mInput.put(Constants.Props.createdAt.toString(), now);
     mInput.put(Constants.Props.updatedAt.toString(), now);
     
-    JFDBCollection collection = JFDBCollectionFactory.getInstance()
+    MongoCollection collection = MongoCollectionFactory.getInstance()
         .getCollection(collectionName);
     collection.create(mInput);
     

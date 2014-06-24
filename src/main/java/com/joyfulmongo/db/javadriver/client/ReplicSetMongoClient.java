@@ -40,6 +40,7 @@ public class ReplicSetMongoClient implements JFMongoClient
       catch (MongoException e)
       {
         e.printStackTrace();
+        throw new IllegalStateException("Failed to connect to MongoDB", e);
       } 
     }
     
@@ -113,8 +114,7 @@ public class ReplicSetMongoClient implements JFMongoClient
     String dbName = System.getProperty(Constants.S_MONGO_DB, "kcpdb");
     return dbName;
   }
-  
-  
+
   @Override
   public DB getMongoDB()
   {    

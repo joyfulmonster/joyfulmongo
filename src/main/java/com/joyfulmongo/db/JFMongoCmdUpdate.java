@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.joyfulmongo.db.javadriver.MongoCollection;
+import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
-
-import com.joyfulmongo.db.javadriver.JFDBCollection;
-import com.joyfulmongo.db.javadriver.JFDBCollectionFactory;
 
 public class JFMongoCmdUpdate extends JFMongoCmd
 {
@@ -87,7 +86,7 @@ public class JFMongoCmdUpdate extends JFMongoCmd
     Date now = Utils.getCurrentTime();
     updates.put(Constants.Props.updatedAt.toString(), now);
     
-    JFDBCollection collection = JFDBCollectionFactory.getInstance()
+    MongoCollection collection = MongoCollectionFactory.getInstance()
         .getCollection(colname);
     collection.update(query, updates);
     

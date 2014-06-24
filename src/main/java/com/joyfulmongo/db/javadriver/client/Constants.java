@@ -13,10 +13,5 @@ public class Constants
 
   public static final String S_MONGO_DB_DEFAULT = "kcpdb";
   public static final String S_MONGO_PHOTO_DB_DEFAULT = "kcpphoto";
-  public static final String S_MONGO_SMS_DB_DEFAULT = "pushSmsDbs"; 
-
-  public static final String KCP_API_PROTOCOL = "KCP_API_PROTOCOL";      
-  public static final String KCP_SERVER_HOSTNAME = "KCP_SERVER_HOSTNAME";
-  public static final String KCP_HTTPS_PORT = "HTTP_SSL_LISTENER_PORT"; 
-  public static final String KCP_HTTP_PORT = "HTTP_LISTENER_PORT";
+  public static final String S_MONGO_SMS_DB_DEFAULT = "pushSmsDbs";
 }

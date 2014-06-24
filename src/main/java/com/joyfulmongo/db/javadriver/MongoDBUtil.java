@@ -33,9 +33,9 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-public class JFDBUtil
+public class MongoDBUtil
 {
-  private static Logger LOGGER = Logger.getLogger(JFDBUtil.class.getName());
+  private static Logger LOGGER = Logger.getLogger(MongoDBUtil.class.getName());
   
   public static DBObject toDBObject(JSONArray a)
   {

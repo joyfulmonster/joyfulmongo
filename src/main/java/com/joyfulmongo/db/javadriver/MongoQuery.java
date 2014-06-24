@@ -34,9 +34,9 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-public class JFDBQuery
+public class MongoQuery
 {
-  private static Logger LOGGER = Logger.getLogger(JFDBQuery.class.getName());
+  private static Logger LOGGER = Logger.getLogger(MongoQuery.class.getName());
   
   private DBObject projections;
   private String collectionName;
@@ -48,8 +48,8 @@ public class JFDBQuery
   
   private String distinctField;
   
-  private JFDBQuery(String colname, DBObject constraints, DBObject projection,
-      int limit, int skip, DBObject sort)
+  private MongoQuery(String colname, DBObject constraints, DBObject projection,
+                     int limit, int skip, DBObject sort)
   {
     this.collectionName = colname;
     this.constraints = constraints;
@@ -59,7 +59,7 @@ public class JFDBQuery
     this.sortBy = sort;
   }
   
-  public JFDBQuery(String colname, DBObject constraints, String distinctField)
+  public MongoQuery(String colname, DBObject constraints, String distinctField)
   {
     this.collectionName = colname;
     this.constraints = constraints;
@@ -97,12 +97,12 @@ public class JFDBQuery
     return result;
   }
   
-  public List<JFDBObject> find()
+  public List<MongoObject> find()
   {
     long start = System.currentTimeMillis();
     DBCollection collection = getDBCollection(collectionName);
     
-    List<JFDBObject> result = new ArrayList<JFDBObject>(0);
+    List<MongoObject> result = new ArrayList<MongoObject>(0);
     if (LOGGER.isLoggable(Level.FINE))
     {
       LOGGER.log(Level.FINE, "Find collection=" + collection + "\n"
@@ -111,15 +111,19 @@ public class JFDBQuery
           + "\n" + " sortby=" + sortBy + "\n");
     }
 
-    DBCursor cursor = collection.find(constraints, projections).limit(limit)
-        .skip(skip).sort(sortBy);
+    DBCursor cursor = collection.
+            find(constraints, projections).
+            limit(limit).
+            skip(skip).
+            sort(sortBy);
+
     while (cursor.hasNext())
     {
       DBObject obj = cursor.next();
-      result.add(new JFDBObject(collectionName, obj));
+      result.add(new MongoObject(collectionName, obj));
     }
     
-    MonitorManager.getInstance().logQuery(collectionName, JFDBUtil.toJSONObject(constraints), JFDBUtil.toJSONObject(sortBy), 
+    MonitorManager.getInstance().logQuery(collectionName, MongoDBUtil.toJSONObject(constraints), MongoDBUtil.toJSONObject(sortBy),
         System.currentTimeMillis() - start);
     
     return result;
@@ -187,7 +191,7 @@ public class JFDBQuery
     
     public Builder constraints(JSONObject constraint)
     {
-      this.constraint = JFDBUtil.toDBObject(constraint);
+      this.constraint = MongoDBUtil.toDBObject(constraint);
       return this;
     }
     
@@ -220,15 +224,15 @@ public class JFDBQuery
       return this;
     }
     
-    public JFDBQuery build()
+    public MongoQuery build()
     {
-      JFDBQuery result;
+      MongoQuery result;
       if (this.distinctField != null)
       {
-        result = new JFDBQuery(colname, constraint, distinctField);
+        result = new MongoQuery(colname, constraint, distinctField);
       } else
       {
-        result = new JFDBQuery(colname, constraint, projection, limit, skip, sort);
+        result = new MongoQuery(colname, constraint, projection, limit, skip, sort);
       }
       
       return result;
