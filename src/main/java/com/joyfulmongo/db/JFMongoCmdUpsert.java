@@ -22,7 +22,7 @@ import com.joyfulmongo.db.javadriver.MongoCollection;
 import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
 
-class JFMongoCmdUpsert extends JFMongoCmd
+class JFMongoCmdUpsert extends JFCommand
 {
   private JSONObject updates;
   private JSONObject query;

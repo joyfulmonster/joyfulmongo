@@ -22,7 +22,7 @@ import com.joyfulmongo.controller.JFCConstants;
 import com.joyfulmongo.controller.JFUserError;
 import com.mongodb.util.Util;
 
-public class JFMongoCmdLogin extends JFMongoCmd
+public class JFMongoCmdLogin extends JFCommand
 {
   private String username;
   private String password;

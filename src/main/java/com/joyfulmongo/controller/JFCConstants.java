@@ -50,7 +50,11 @@ public class JFCConstants
 		fields, 
 		order, 
 		include, 
-		redirectClassNameForKey, // this is special condition for relation query  
-	}
+		redirectClassNameForKey, // this is special condition for relation query
+
+        // elasticsearch
+        query_must,
+        query_should,
+    }
 }
 

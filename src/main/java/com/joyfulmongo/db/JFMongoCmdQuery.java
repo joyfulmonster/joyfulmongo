@@ -34,7 +34,7 @@ import org.json.JSONObject;
 
 import com.joyfulmongo.controller.JFCConstants;
 
-public class JFMongoCmdQuery extends JFMongoCmd
+public class JFMongoCmdQuery extends JFCommand
 {
   private static Logger LOGGER = Logger.getLogger(JFMongoCmdQuery.class.getName());
   

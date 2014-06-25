@@ -16,6 +16,7 @@
 
 package com.joyfulmongo.db.elasticsearch;
 
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
@@ -23,18 +24,12 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -43,53 +38,15 @@ import java.util.logging.Logger;
 public class ESSearchQuery {
     private static Logger LOGGER = Logger.getLogger(ESSearchQuery.class.getName());
 
-    private JSONObject projections;
-    private String collectionName;
-    private JSONObject constraints;
+    private SearchRequestBuilder search;
 
-    private int limit;
-    private int skip;
-    private JSONObject sortBy = null;
-
-    private String distinctField;
-
-    private ESSearchQuery(String indexName, 
-                          JSONObject constraints, 
-                          JSONObject projection,
-                          int limit, 
-                          int skip, 
-                          JSONObject sort)
+    private ESSearchQuery( )
     {
-        this.collectionName = indexName;
-        this.constraints = constraints;
-        this.projections = projection;
-        this.limit = limit;
-        this.skip = skip;
-        this.sortBy = sort;
-    }
-
-    public JSONObject getConstraints()
-    {
-        return this.constraints;
     }
 
     public List<JSONObject> find()
     {
-        Settings settings = ImmutableSettings.settingsBuilder().build(); //put("cluster.name", "kcpes").build();
-        Client client =  new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress("192.168.127.139", 9300));
-
-        MatchQueryBuilder query1 = QueryBuilders.matchQuery("FO", "北京到 AND (泰安 OR 巴楚)");
-        //MatchQueryBuilder query2 = QueryBuilders.matchQuery("FO", "泰安");
-        BoolQueryBuilder query = QueryBuilders.boolQuery().must(query1); //.should(query2);
-
-        SearchResponse response = client.prepareSearch("kcpdb")
-                .setTypes("Freight")
-                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(query1)             // Query
-                //.setPostFilter(FilterBuilders.rangeFilter("age").from(12).to(18))   // Filter
-                .setFrom(0).setSize(60).setExplain(true)
-                .execute()
-                .actionGet();
+        SearchResponse response = search.execute().actionGet();
 
         SearchHits hits = response.getHits();
         for (SearchHit hit : hits.getHits()) {
@@ -102,49 +59,74 @@ public class ESSearchQuery {
 
     public static class Builder
     {
-        private String colname;
-        private JSONObject constraint;
+        private String applicationName;
+        private String collectionName;
+        private String[] fields = new String[0];
         private JSONObject projection;
         private int limit;
         private int skip;
-        private String distinctField;
         private JSONObject sort;
+        private Map<String, List<String>> musts;
+        private Map<String, List<String>> shoulds;
+
+        private static Client client;
+        static {
+            String esClusterName = System.getProperty("es.cluster.name");
+            String esNodeHost = System.getProperty("es.node.hostname", "192.168.127.139");
+            String esNodePort = System.getProperty("es.node.port", "9300");
+
+            Settings settings = ImmutableSettings.settingsBuilder().build(); //put("cluster.name", "kcpes").build();
+            client =  new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(esNodeHost, Integer.parseInt(esNodePort)));
+        }
 
         public Builder()
         {
-            this.colname = colname;
             this.limit = 100;
             this.skip = 0;
             this.sort = null;
+            this.musts = new HashMap<String, List<String>>(); // ArrayList<String>();
+            this.shoulds = new HashMap<String, List<String>>(); //ArrayList<String>();
             this.projection = new JSONObject();
-            this.constraint = new JSONObject();
             this.sort = new JSONObject();
-            this.distinctField = null;
         }
 
-        public void collection(String colname2)
+        public Builder applicationName(String applicationName)
         {
-            this.colname = colname2;
-        }
-
-        public Builder projection(String... fields)
-        {
+            this.applicationName = applicationName;
             return this;
         }
 
-        public Builder distinct(String distinctField)
+        public Builder collectionName(String collectionName)
         {
-            this.distinctField = distinctField;
+            this.collectionName = collectionName;
             return this;
         }
 
-        public Builder projectionExclude(String... fields)
+        public Builder fields(String... fields)
         {
+            this.fields = fields;
             return this;
         }
 
-        public Builder constraints(JSONObject constraint)
+        public Builder must(String field, String match)
         {
+            List<String> matches = this.musts.get(field);
+            if (matches == null) {
+                matches = new ArrayList<String>();
+                this.musts.put(field, matches);
+            }
+            matches.add(match);
+            return this;
+        }
+
+        public Builder should (String field, String match)
+        {
+            List<String> matches = this.shoulds.get(field);
+            if (matches == null) {
+                matches = new ArrayList<String>();
+                this.shoulds.put(field, matches);
+            }
+            matches.add(match);
             return this;
         }
 
@@ -167,9 +149,49 @@ public class ESSearchQuery {
 
         public ESSearchQuery build()
         {
-            ESSearchQuery result;
-            result = new ESSearchQuery(colname, constraint, projection, limit, skip, sort);
+            QueryBuilder query = null;
+            Iterator<String> mustkeys = musts.keySet().iterator();
+            while(mustkeys.hasNext()) {
+                String mustKey = mustkeys.next();
+                List<String> mustVal = musts.get(mustKey);
+                String pattern = "";
+                if (mustVal.size() > 0) {
+                    pattern = mustVal.get(0);
+                }
+                for (int i=1; i<mustVal.size(); i++) {
+                    pattern += " AND " + mustVal.get(0);
+                }
 
+                List<String> shouldVals = musts.get(mustKey);
+                if (shouldVals.size() > 0) {
+                    pattern = "AND (" + shouldVals.get(0);
+                }
+                for (int i=1; i<shouldVals.size(); i++) {
+                    pattern += " OR " + shouldVals.get(0);
+                }
+
+                pattern += ")";
+
+                System.out.println ("Query pattern: " + mustKey + ":" + pattern);
+                query = QueryBuilders.matchQuery(mustKey, pattern);
+            }
+
+            //QueryBuilder query1 = QueryBuilders.matchQuery("FO", "北京到 AND (泰安 OR 巴楚)");
+            //MatchQueryBuilder query2 = QueryBuilders.matchQuery("FO", "泰安");
+            //QueryBuilder query = QueryBuilders.boolQuery().must(query1); //.should(query2);
+
+            SearchRequestBuilder search = client.prepareSearch(applicationName)
+                    .setTypes(collectionName)
+                    .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                    .setQuery(query)
+                    .setFrom(skip)
+                    .setSize(limit)
+                    .setExplain(true)
+                    .addFields(fields);
+            //.setPostFilter(FilterBuilders.rangeFilter("age").from(12).to(18))   // Filter
+
+            ESSearchQuery result = new ESSearchQuery();
+            result.search = search;
             return result;
         }
     }

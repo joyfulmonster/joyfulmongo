@@ -22,7 +22,7 @@ import com.joyfulmongo.db.javadriver.MongoCollection;
 import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
 
-public class JFMongoCmdDelete extends JFMongoCmd
+public class JFMongoCmdDelete extends JFCommand
 {
   private JSONObject mObj;
   private String collectionName;

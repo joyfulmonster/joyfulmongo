@@ -25,7 +25,7 @@ import com.joyfulmongo.db.javadriver.MongoCollection;
 import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
 
-public class JFMongoCmdUpdate extends JFMongoCmd
+public class JFMongoCmdUpdate extends JFCommand
 {
   private static Logger LOGGER = Logger.getLogger(JFMongoCmdUpdate.class.getName());
   private JSONObject updates;

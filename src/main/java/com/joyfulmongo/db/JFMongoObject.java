@@ -77,8 +77,7 @@ public class JFMongoObject
   
   public ContainerObjectPointer[] getPointer(String key)
   {
-    List<ContainerObjectPointer> pointerList = new ArrayList<ContainerObjectPointer>(
-        0);
+    List<ContainerObjectPointer> pointerList = new ArrayList<ContainerObjectPointer>(0);
     Object o = mObj.opt(key);
     if (o instanceof JSONObject)
     {

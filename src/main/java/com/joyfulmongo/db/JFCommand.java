@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public abstract class JFMongoCmd
+public abstract class JFCommand
 {
   /**
    * prepare

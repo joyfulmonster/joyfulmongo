@@ -34,8 +34,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-public class MongoQuery
-{
+public class MongoQuery {
   private static Logger LOGGER = Logger.getLogger(MongoQuery.class.getName());
   
   private DBObject projections;

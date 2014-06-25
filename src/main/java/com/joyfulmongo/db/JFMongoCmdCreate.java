@@ -24,7 +24,7 @@ import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.JSONObject;
 
-public class JFMongoCmdCreate extends JFMongoCmd
+public class JFMongoCmdCreate extends JFCommand
 {
   private String collectionName;
   private Date now;
