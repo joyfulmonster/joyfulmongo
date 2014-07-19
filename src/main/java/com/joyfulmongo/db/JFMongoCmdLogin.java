@@ -50,12 +50,12 @@ public class JFMongoCmdLogin extends JFCommand
         .projectionExclude(Constants.Props.password.toString())
         .whereEquals(Constants.Props.username.toString(), username)
         .whereEquals(Constants.Props.password.toString(), md5Password).build();
-    List<JFMongoObject> parseObjs = query.find();
+    List<JFMongoObject> joyObjects = query.find();
     
     JFMongoCmdResult result = new JFMongoCmdResult();
-    if (parseObjs.size() > 0)
+    if (joyObjects.size() > 0)
     {
-      result.put(JFCConstants.Props.data.toString(), parseObjs.get(0));
+      result.put(JFCConstants.Props.data.toString(), joyObjects.get(0));
     } else
     {
       JFUserError e = new JFUserError(JFMongoException.VALIDATION_ERROR, "invalid username and password combination");

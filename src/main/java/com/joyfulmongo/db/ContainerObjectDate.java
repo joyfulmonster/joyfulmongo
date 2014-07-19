@@ -37,12 +37,12 @@ public class ContainerObjectDate extends JSONObjectSupport implements
   }
 
   @Override
-  public void onCreate(String collectionName, JSONObject parseObject)
+  public void onCreate(String collectionName, JSONObject joyObject)
   {
   }
 
   @Override
-  public void onUpdate(String collectionName, JSONObject parseObject)
+  public void onUpdate(String collectionName, JSONObject joyObject)
   {    
   }
   

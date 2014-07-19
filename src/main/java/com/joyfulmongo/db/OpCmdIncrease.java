@@ -33,24 +33,24 @@ public class OpCmdIncrease extends OpCmd
   }
   
   @Override
-  public void onCreate(String colname, JSONObject parseObject)
+  public void onCreate(String colname, JSONObject joyObject)
   {
-    onUpdate(colname, parseObject);
+    onUpdate(colname, joyObject);
   }
   
   @Override
-  public void onUpdate(String colname, JSONObject parseObject)
+  public void onUpdate(String colname, JSONObject joyObject)
   {
     Double amount = mObj.getDouble(IncProps.amount.toString());
     JSONObject field = new JSONObject();
     field.put(key, amount);
     
-    parseObject.remove(key);
-    parseObject.put(CMD_INC, field);
+    joyObject.remove(key);
+    joyObject.put(CMD_INC, field);
   }
 
   @Override
-  public void onQuery(String collectionName, JSONObject parseObject)
+  public void onQuery(String collectionName, JSONObject joyObject)
   {
     // TODO Auto-generated method stub
     

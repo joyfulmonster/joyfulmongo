@@ -16,7 +16,7 @@
 */
 package com.joyfulmonster.webservice;
 
-import com.joyfulmongo.webservice.ParseProgramResources;
+import com.joyfulmongo.webservice.PostProgramResources;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.grizzly.GrizzlyTestContainerFactory;
@@ -41,7 +41,7 @@ public class CRUDTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        return new ResourceConfig(ParseProgramResources.class);
+        return new ResourceConfig(PostProgramResources.class);
     }
 
     @Test

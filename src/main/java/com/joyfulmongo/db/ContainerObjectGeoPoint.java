@@ -68,7 +68,7 @@ public class ContainerObjectGeoPoint extends JSONObjectSupport implements
   }
 
   @Override
-  public void onQuery(String collectionName, JSONObject parseObject)
+  public void onQuery(String collectionName, JSONObject joyObject)
   {    
   }
 }

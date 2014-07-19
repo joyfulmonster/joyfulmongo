@@ -45,9 +45,9 @@ import com.joyfulmongo.controller.JFUpdateInput;
 import com.joyfulmongo.controller.JFUpdateOutput;
 
 @Path("/2")
-public class ParseProgramResources extends BaseResource
+public class PostProgramResources extends BaseResource
 {
-  private static Logger LOGGER = Logger.getLogger(ParseProgramResources.class.getName());
+  private static Logger LOGGER = Logger.getLogger(PostProgramResources.class.getName());
   
   @Path("user_signup")
   @POST

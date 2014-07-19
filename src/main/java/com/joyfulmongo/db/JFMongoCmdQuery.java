@@ -62,9 +62,9 @@ public class JFMongoCmdQuery extends JFCommand
   @Override
   protected JFMongoCmdResult execute()
   {
-    List<JFMongoObject> parseObjs = find();
+    List<JFMongoObject> joyObjects = find();
     JFMongoCmdResult result = new JFMongoCmdResult();
-    result.put(JFCConstants.Props.results.toString(), parseObjs);
+    result.put(JFCConstants.Props.results.toString(), joyObjects);
     if (this.redirectClassname != null)
     {
       result.put(JFCConstants.Props.classname.toString(), redirectClassname);
@@ -96,9 +96,9 @@ public class JFMongoCmdQuery extends JFCommand
     
     for (MongoObject obj : objs)
     {
-      JFMongoObject parseObj = new JFMongoObject(this.collectionName, obj);
+      JFMongoObject joyObject = new JFMongoObject(this.collectionName, obj);
       
-      JSONObject json = parseObj.toJson();
+      JSONObject json = joyObject.toJson();
       Iterator<String> relKeys = relationKeyToClassnameMap.keySet().iterator();
       while (relKeys.hasNext())
       {
@@ -110,8 +110,8 @@ public class JFMongoCmdQuery extends JFCommand
         }
       }
       
-      results.add(parseObj);
-      linkIncludeObjectIdToParentObject(parseObj, includeKeyToParentObjectMap,
+      results.add(joyObject);
+      linkIncludeObjectIdToParentObject(joyObject, includeKeyToParentObjectMap,
           includeKeyToPointerColnameMap);
     }
     

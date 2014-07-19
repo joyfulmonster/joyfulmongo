@@ -123,39 +123,4 @@ public class QueryConditionFilterRelation implements QueryConditionFilter
     
     return result;
   }
-  
-  /*
-   * public JFMongoCmdQuery.Builder getActualQuery() { JFParsePointer pointer =
-   * getPointer(); String relationKey = getRelationKey();
-   * 
-   * JFMongoObject refereeObj = pointer.getRefereeObject(); JSONObject objJson =
-   * refereeObj.toJson();
-   * 
-   * String collname = origBuilder.getCollection();
-   * 
-   * RelationMetadata.queryRelations(collname, relationKey);
-   * 
-   * JSONArray pointerArray = objJson.getJSONArray(relationKey);
-   * 
-   * String refereeCollection = null; List<String> objectIds = new
-   * ArrayList<String>(); for (int i=0; i<pointerArray.length(); i++) {
-   * JSONObject onePointerJson = pointerArray.getJSONObject(i); JFParsePointer
-   * onePointer = new JFParsePointer(relationKey, onePointerJson);
-   * refereeCollection = onePointer.getClassName();
-   * objectIds.add(onePointer.getObjectId()); }
-   * 
-   * JFMongoCmdQuery.Builder newBuilder = new
-   * JFMongoCmdQuery.Builder(refereeCollection); JSONObject constraints =
-   * origBuilder.getConstraints(); constraints.remove(S_KEY);
-   * newBuilder.constraints(constraints);
-   * newBuilder.whereContainedIn(JFParseConstants.Props.objectId.toString(),
-   * objectIds); newBuilder.projection(origBuilder.getProjections());
-   * newBuilder.projectionExclude(origBuilder.getProjectionsExclude());
-   * newBuilder.include(origBuilder.getIncludes());
-   * newBuilder.limit(origBuilder.getLimit());
-   * newBuilder.skip(origBuilder.getSkip());
-   * newBuilder.sort(origBuilder.getSort());
-   * 
-   * return newBuilder; }
-   */
 }

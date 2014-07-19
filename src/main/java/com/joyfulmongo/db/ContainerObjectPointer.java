@@ -37,17 +37,17 @@ public class ContainerObjectPointer extends JSONObjectSupport implements
   }
   
   @Override
-  public void onCreate(String colname, JSONObject parseObject)
+  public void onCreate(String colname, JSONObject joyObject)
   {
   }
   
   @Override
-  public void onUpdate(String colname, JSONObject parseObject)
+  public void onUpdate(String colname, JSONObject joyObject)
   {
   }
   
   @Override
-  public void onQuery(String collectionName, JSONObject parseObject)
+  public void onQuery(String collectionName, JSONObject joyObject)
   {    
   }
   
@@ -69,12 +69,12 @@ public class ContainerObjectPointer extends JSONObjectSupport implements
     queryBuilder
         .whereEquals(Constants.Props.objectId.toString(), getObjectId());
     
-    List<JFMongoObject> parseObjs = queryBuilder.build().find();
+    List<JFMongoObject> joyObjects = queryBuilder.build().find();
     
     JFMongoObject result = null;
-    if (parseObjs.size() > 0)
+    if (joyObjects.size() > 0)
     {
-      result = parseObjs.get(0);
+      result = joyObjects.get(0);
     } else
     {
       throw new IllegalArgumentException(

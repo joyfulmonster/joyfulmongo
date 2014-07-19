@@ -24,19 +24,19 @@ public interface ContainerObject
   /**
    * Callback on create
    * 
-   * @param parseObject
+   * @param joyObject
    */
-  void onCreate(String collectionName, JSONObject parseObject);
+  void onCreate(String collectionName, JSONObject joyObject);
   
   /**
    * Callback on update
    * 
-   * @param parseObject
+   * @param joyObject
    */
-  void onUpdate(String collectionName, JSONObject parseObject);
+  void onUpdate(String collectionName, JSONObject joyObject);
   
   /*
    * 
    */
-  void onQuery(String collectionName, JSONObject parseObject);
+  void onQuery(String collectionName, JSONObject joyObject);
 }

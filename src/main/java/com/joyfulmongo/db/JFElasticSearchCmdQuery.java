@@ -58,9 +58,9 @@ public class JFElasticSearchCmdQuery extends JFCommand{
     @Override
     protected JFMongoCmdResult execute()
     {
-        List<JSONObject> parseObjs = query.find();
+        List<JSONObject> joyObjects = query.find();
         JFMongoCmdResult result = new JFMongoCmdResult();
-        result.put(JFCConstants.Props.results.toString(), parseObjs);
+        result.put(JFCConstants.Props.results.toString(), joyObjects);
         if (this.redirectClassname != null)
         {
             result.put(JFCConstants.Props.classname.toString(), redirectClassname);

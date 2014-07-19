@@ -35,10 +35,10 @@ public class OpCmdAdd extends OpCmd
   }
   
   @Override
-  public void onCreate(String colname, JSONObject parseObject)
+  public void onCreate(String colname, JSONObject joyObject)
   {
     JSONArray a = mObj.optJSONArray(AddProps.objects.toString());
-    parseObject.put(key, a);
+    joyObject.put(key, a);
   }
   
   @Override
@@ -49,23 +49,23 @@ public class OpCmdAdd extends OpCmd
   }
   
   @Override
-  public void onUpdate(String colname, JSONObject parseObject)
+  public void onUpdate(String colname, JSONObject joyObject)
   {
     JSONArray a = mObj.optJSONArray(AddProps.objects.toString());
     JSONObject each = new JSONObject();
     each.put(CMD_EACH, a);
     
-    JSONObject addToSet = parseObject.optJSONObject(CMD_ADD_TO_SET);
+    JSONObject addToSet = joyObject.optJSONObject(CMD_ADD_TO_SET);
     if (addToSet == null)
     {
       JSONObject field = new JSONObject();
       field.put(key, each);
       
-      parseObject.remove(key);
-      parseObject.put(CMD_ADD_TO_SET, field);
+      joyObject.remove(key);
+      joyObject.put(CMD_ADD_TO_SET, field);
     } else
     {
-      parseObject.remove(key);
+      joyObject.remove(key);
       addToSet.put(key, each);
     }
   }
@@ -78,7 +78,7 @@ public class OpCmdAdd extends OpCmd
   }
 
   @Override
-  public void onQuery(String collectionName, JSONObject parseObject)
+  public void onQuery(String collectionName, JSONObject joyObject)
   {
     // TODO Auto-generated method stub
     

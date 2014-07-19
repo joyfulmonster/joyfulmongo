@@ -29,19 +29,19 @@ public class ContainerObjectDefault extends JSONObjectSupport implements
   }
   
   @Override
-  public void onCreate(String colname, JSONObject parse)
+  public void onCreate(String colname, JSONObject joyObject)
   {
     // do nothing
   }
   
   @Override
-  public void onUpdate(String colname, JSONObject parseObject)
+  public void onUpdate(String colname, JSONObject joyObject)
   {
     // do nothing
   }
 
   @Override
-  public void onQuery(String collectionName, JSONObject parseObject)
+  public void onQuery(String collectionName, JSONObject joyObject)
   {
     
   }

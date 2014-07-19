@@ -32,13 +32,13 @@ public class OpCmdAddRelation extends OpCmd
   }
   
   @Override
-  public void onCreate(String colname, JSONObject parseObject)
+  public void onCreate(String colname, JSONObject joyObject)
   {
-    onUpdate(colname, parseObject);
+    onUpdate(colname, joyObject);
   }
   
   @Override
-  public void onUpdate(String colname, JSONObject parseObject)
+  public void onUpdate(String colname, JSONObject joyObject)
   {
     String pointerClassname = null;
     
@@ -54,7 +54,7 @@ public class OpCmdAddRelation extends OpCmd
         
         pointerClassname = pointer.getClassName();
         String classname = colname;
-        String objId = parseObject.getString(Constants.Props.objectId
+        String objId = joyObject.getString(Constants.Props.objectId
             .toString());
         
         insertRelation(classname, objId, key, pointer);
@@ -66,7 +66,7 @@ public class OpCmdAddRelation extends OpCmd
     {
       ContainerObjectRelation prel = new ContainerObjectRelation(
           pointerClassname);
-      parseObject.put(key, prel.toJson());
+      joyObject.put(key, prel.toJson());
     }
   }
   
@@ -104,7 +104,7 @@ public class OpCmdAddRelation extends OpCmd
   }
 
   @Override
-  public void onQuery(String collectionName, JSONObject parseObject)
+  public void onQuery(String collectionName, JSONObject joyObject)
   {
     // TODO Auto-generated method stub
     
