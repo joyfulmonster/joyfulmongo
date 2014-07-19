@@ -20,6 +20,8 @@ import com.joyfulmongo.controller.JFCConstants;
 import com.joyfulmongo.db.elasticsearch.ESSearchQuery;
 import com.joyfulmongo.db.javadriver.MongoObject;
 import com.joyfulmongo.db.javadriver.MongoQuery;
+import com.joyfulmongo.util.JsonUtil;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -89,7 +91,7 @@ public class JFElasticSearchCmdQuery extends JFCommand{
 
     public static class Builder {
         private String collectionName;
-        private ESSearchQuery.Builder dbQueryBuilder;
+        private ESSearchQuery.Builder esQuery;
 
         private JSONObject constraints;
         private List<String> includes;
@@ -103,9 +105,9 @@ public class JFElasticSearchCmdQuery extends JFCommand{
                         "Collection name can not be null or zero length");
             }
 
-            dbQueryBuilder = new ESSearchQuery.Builder();
-            dbQueryBuilder.applicationName("kcpdb");
-            dbQueryBuilder.collectionName(collectionName);
+            esQuery = new ESSearchQuery.Builder();
+            esQuery.applicationName("kcpdb2");
+            esQuery.collectionName(collectionName);
 
             this.collectionName = collectionName;
             this.sorts = new ArrayList<String>(0);
@@ -115,17 +117,17 @@ public class JFElasticSearchCmdQuery extends JFCommand{
         }
 
         public void collection(String colname) {
-            this.dbQueryBuilder.collectionName(colname);
+            this.esQuery.collectionName(colname);
             this.collectionName = colname;
         }
 
-        public Builder must(String field, String val){
-            dbQueryBuilder.must(field, val);
+        public Builder must(String field, String... vals){
+            esQuery.must(field, vals);
             return this;
         }
 
-        public Builder should(String field, String val){
-            dbQueryBuilder.should(field, val);
+        public Builder should(String field, String... vals){
+            esQuery.should(field, vals);
             return this;
         }
 
@@ -182,6 +184,25 @@ public class JFElasticSearchCmdQuery extends JFCommand{
 
         public Builder constraints(JSONObject constraints) {
             this.constraints = constraints;
+            if (constraints.has(JFCConstants.Props.query_must.toString())) {
+              JSONObject json = constraints.getJSONObject(JFCConstants.Props.query_must.toString());
+              Iterator<String> keys = json.keys();
+              while (keys.hasNext()) {
+                String key = keys.next();
+                JSONArray array = json.getJSONArray(key);
+                esQuery.must(key, JsonUtil.toArray(array));                
+              }
+            }
+            
+            if (constraints.has(JFCConstants.Props.query_should.toString())) {
+              JSONObject json = constraints.getJSONObject(JFCConstants.Props.query_should.toString());
+              Iterator<String> keys = json.keys();
+              while (keys.hasNext()) {
+                String key = keys.next();
+                JSONArray array = json.getJSONArray(key);
+                esQuery.should(key, JsonUtil.toArray(array));                
+              }
+            }            
             return this;
         }
 
@@ -195,11 +216,9 @@ public class JFElasticSearchCmdQuery extends JFCommand{
         }
 
         public JFElasticSearchCmdQuery build() {
-            Builder theBuilder = this;
-
-            ESSearchQuery dbquery = dbQueryBuilder.build();
+            ESSearchQuery dbquery = esQuery.build();
+            System.out.println ("The ESQuery " + dbquery);
             JFElasticSearchCmdQuery query = new JFElasticSearchCmdQuery(collectionName, dbquery, null);
-            query.setIncludeFields(theBuilder.getIncludes());
             return query;
         }
     }

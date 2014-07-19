@@ -44,7 +44,7 @@ import com.joyfulmongo.controller.JFSignupOutput;
 import com.joyfulmongo.controller.JFUpdateInput;
 import com.joyfulmongo.controller.JFUpdateOutput;
 
-@Path("/program")
+@Path("/2")
 public class ParseProgramResources extends BaseResource
 {
   private static Logger LOGGER = Logger.getLogger(ParseProgramResources.class.getName());
@@ -160,12 +160,12 @@ public class ParseProgramResources extends BaseResource
   @Produces({ Constants.JF_JSON })
   public Response find(String input)
   {
-    LOGGER.log(Level.FINER, "find input=" + input);
+    LOGGER.log(Level.INFO, "find input=" + input);
     JFFindInput findInput = new JFFindInput(input);
     JFController<JFFindInput, JFFindOutput> controller = JFController
         .getInstance(JFFindInput.class, JFFindOutput.class);
     JFResult result = controller.processWrapper(findInput);
-    LOGGER.log(Level.FINER, "find result=" + result);
+    LOGGER.log(Level.INFO, "find result=" + result);
     return getResponse(result);
   }
 }

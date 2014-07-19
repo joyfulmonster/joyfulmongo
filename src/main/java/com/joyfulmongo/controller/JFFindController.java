@@ -17,15 +17,20 @@
 package com.joyfulmongo.controller;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.joyfulmongo.db.JFElasticSearchCmdQuery;
 import com.joyfulmongo.db.JFMongoCmdQuery;
+
 import org.json.JSONObject;
 
 import com.joyfulmongo.db.JFMongoObject;
 
 public class JFFindController extends JFController<JFFindInput, JFFindOutput>
 {
+  private static Logger LOGGER = Logger.getLogger(JFFindController.class.getName());
+  
   @Override
   public JFFindOutput process(JFFindInput input)
   {
@@ -43,8 +48,10 @@ public class JFFindController extends JFController<JFFindInput, JFFindOutput>
     List<JFMongoObject> results = null;
 
     boolean hasQuery = condition.has(JFCConstants.Props.query_must.toString()) || condition.has(JFCConstants.Props.query_should.toString());;
-    if (hasQuery){
+    if (false){
+        LOGGER.log(Level.INFO, "Full Text Search Condition " + condition);
         JFElasticSearchCmdQuery query = new JFElasticSearchCmdQuery.Builder(colName).
+                constraints(condition).                
                 limit(limit).
                 skip(skip).
                 include(includes).

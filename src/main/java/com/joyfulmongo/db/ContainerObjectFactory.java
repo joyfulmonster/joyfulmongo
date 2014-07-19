@@ -22,12 +22,13 @@ public class ContainerObjectFactory
 {
   public enum TypeProps
   {
-    __type, __op,
+    __type, 
+    __op,
   }
   
   public enum OpType
   {
-    Add, AddRelation, RemoveRelation, Increment, other;
+    Add, AddRelation, RemoveRelation, Increment, Search, other;
     
     public static OpType getEnum(String str)
     {
@@ -112,6 +113,9 @@ public class ContainerObjectFactory
         break;
       case Increment:
         result = new OpCmdIncrease(key, json);
+        break;
+      case Search:
+        result = new OpCmdSearch(key, json);
         break;
       case other:
       default:

@@ -25,7 +25,11 @@ import org.junit.Test;
 public class SearchTest {
     @Test
     public void testSearch(){
-        ESSearchQuery query = new ESSearchQuery.Builder().build();
+        ESSearchQuery query = new ESSearchQuery.Builder().
+                applicationName("kcpdb").
+                collectionName("Freight").
+                must("FO", "北京").
+                build();
         query.find();
     }
 }

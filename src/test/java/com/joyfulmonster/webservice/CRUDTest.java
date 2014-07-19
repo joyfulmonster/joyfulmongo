@@ -52,7 +52,7 @@ public class CRUDTest extends JerseyTest {
         JSONObject data = new JSONObject();
         data.put ("name1", "val1");
         json.put("data", data);
-        webTarget.path("/program/create").request(MediaType.APPLICATION_JSON_TYPE).
+        webTarget.path("/2/create").request(MediaType.APPLICATION_JSON_TYPE).
                 post(Entity.entity(json.toString(), MediaType.APPLICATION_JSON), String.class);
     }
 }
