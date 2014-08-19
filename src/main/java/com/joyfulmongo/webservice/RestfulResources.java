@@ -18,9 +18,9 @@ package com.joyfulmongo.webservice;
 
 import com.joyfulmongo.controller.*;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.logging.Level;
@@ -28,19 +28,16 @@ import java.util.logging.Logger;
 
 /**
  * @author wbao
- *
  */
 @Path("/")
-public class RestfulResources extends BaseResource
-{
+public class RestfulResources extends BaseResource {
     private static Logger LOGGER = Logger.getLogger(PostProgramResources.class.getName());
 
     @Path("user_signup")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response signup(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response signup(String input) {
         LOGGER.log(Level.FINER, "signup input=" + input);
         JFSignupInput signupInput = new JFSignupInput(input);
         JFController<JFSignupInput, JFSignupOutput> controller = JFController
@@ -53,9 +50,8 @@ public class RestfulResources extends BaseResource
     @Path("user_login")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response login(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response login(String input) {
         LOGGER.log(Level.FINE, "login input=" + input);
         JFLoginInput loginInput = new JFLoginInput(input);
         JFController<JFLoginInput, JFLoginOutput> controller = JFController
@@ -68,9 +64,8 @@ public class RestfulResources extends BaseResource
     @Path("create")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response create(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response create(String input) {
         LOGGER.log(Level.FINER, "create input=" + input);
         JFCreateInput createInput = new JFCreateInput(input);
         JFController<JFCreateInput, JFCreateOutput> controller = JFController
@@ -83,9 +78,8 @@ public class RestfulResources extends BaseResource
     @Path("update")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response update(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response update(String input) {
         LOGGER.log(Level.FINER, "update input=" + input);
         JFUpdateInput updateInput = new JFUpdateInput(input);
         JFController<JFUpdateInput, JFUpdateOutput> controller = JFController
@@ -98,9 +92,8 @@ public class RestfulResources extends BaseResource
     @Path("delete")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response delete(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response delete(String input) {
         LOGGER.log(Level.FINER, "delete input=" + input);
         JFDeleteInput deleteInput = new JFDeleteInput(input);
         JFController<JFDeleteInput, JFDeleteOutput> controller = JFController
@@ -113,9 +106,8 @@ public class RestfulResources extends BaseResource
     @Path("multi")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response multi(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response multi(String input) {
         LOGGER.log(Level.FINER, "multi input=" + input);
         JFMultiInput multiInput = new JFMultiInput(input);
         JFController<JFMultiInput, JFMultiOutput> controller = JFController
@@ -128,9 +120,8 @@ public class RestfulResources extends BaseResource
     @Path("get")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response get(String input)
-    {
+    @Produces({Constants.JF_JSON})
+    public Response get(String input) {
         LOGGER.log(Level.FINER, "get input=" + input);
         JFGetInput getInput = new JFGetInput(input);
         JFController<JFGetInput, JFGetOutput> controller = JFController
@@ -143,15 +134,18 @@ public class RestfulResources extends BaseResource
     @Path("find")
     @POST
     @Consumes(Constants.JF_JSON)
-    @Produces({ Constants.JF_JSON })
-    public Response find(String input)
-    {
-        LOGGER.log(Level.FINER, "find input=" + input);
+    @Produces({Constants.JF_JSON})
+    public Response find(String input) {
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINER, "find input=" + input);
+        }
         JFFindInput findInput = new JFFindInput(input);
         JFController<JFFindInput, JFFindOutput> controller = JFController
                 .getInstance(JFFindInput.class, JFFindOutput.class);
         JFResult result = controller.processWrapper(findInput);
-        LOGGER.log(Level.FINER, "find result=" + result);
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINER, "find result=" + result);
+        }
         return getResponse(result);
     }
 }

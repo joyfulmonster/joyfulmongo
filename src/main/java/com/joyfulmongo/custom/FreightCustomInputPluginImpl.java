@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.joyfulmongo.webservice;
+package com.joyfulmongo.custom;
 
 /**
- * Created by wbao on 6/2/2014.
+ * Created by wbao on 8/18/2014.
  */
-public class UserResources {
+public class FreightCustomInputPluginImpl implements CustomInputPlugin {
 }

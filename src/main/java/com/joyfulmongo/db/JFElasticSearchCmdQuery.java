@@ -18,20 +18,20 @@ package com.joyfulmongo.db;
 
 import com.joyfulmongo.controller.JFCConstants;
 import com.joyfulmongo.db.elasticsearch.ESSearchQuery;
-import com.joyfulmongo.db.javadriver.MongoObject;
-import com.joyfulmongo.db.javadriver.MongoQuery;
 import com.joyfulmongo.util.JsonUtil;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 /**
  * Created by wbao on 6/25/2014.
  */
-public class JFElasticSearchCmdQuery extends JFCommand{
+public class JFElasticSearchCmdQuery extends JFCommand {
     private static Logger LOGGER = Logger.getLogger(JFMongoCmdQuery.class.getName());
 
     public static Integer S_DEFAULT_SKIP = 0;
@@ -43,49 +43,42 @@ public class JFElasticSearchCmdQuery extends JFCommand{
     private String redirectClassname;
 
     private JFElasticSearchCmdQuery(String colname, ESSearchQuery dbquery,
-                                    String redirectClassname)
-    {
+                                    String redirectClassname) {
         this.collectionName = colname;
         this.query = dbquery;
         this.redirectClassname = redirectClassname;
     }
 
     @Override
-    protected void beforeExecute()
-    {
+    protected void beforeExecute() {
     }
 
     @Override
-    protected JFMongoCmdResult execute()
-    {
+    protected JFMongoCmdResult execute() {
         List<JSONObject> joyObjects = query.find();
         JFMongoCmdResult result = new JFMongoCmdResult();
         result.put(JFCConstants.Props.results.toString(), joyObjects);
-        if (this.redirectClassname != null)
-        {
+        if (this.redirectClassname != null) {
             result.put(JFCConstants.Props.classname.toString(), redirectClassname);
         }
         return result;
     }
 
-    public List<JFMongoObject> find()
-    {
+    public List<JFMongoObject> find() {
         List<JFMongoObject> objs = new ArrayList<JFMongoObject>();
         List<JSONObject> jobjs = query.find();
-        for (JSONObject jobj : jobjs){
+        for (JSONObject jobj : jobjs) {
             objs.add(new JFMongoObject(collectionName, jobj));
         }
         return objs;
     }
 
     @Override
-    protected JFMongoCmdResult afterExecute(JFMongoCmdResult executeResult)
-    {
+    protected JFMongoCmdResult afterExecute(JFMongoCmdResult executeResult) {
         return executeResult;
     }
 
-    private void setIncludeFields(String... includeFields)
-    {
+    private void setIncludeFields(String... includeFields) {
         this.includeFields = includeFields;
     }
 
@@ -121,12 +114,12 @@ public class JFElasticSearchCmdQuery extends JFCommand{
             this.collectionName = colname;
         }
 
-        public Builder must(String field, String... vals){
+        public Builder must(String field, String... vals) {
             esQuery.must(field, vals);
             return this;
         }
 
-        public Builder should(String field, String... vals){
+        public Builder should(String field, String... vals) {
             esQuery.should(field, vals);
             return this;
         }
@@ -185,24 +178,24 @@ public class JFElasticSearchCmdQuery extends JFCommand{
         public Builder constraints(JSONObject constraints) {
             this.constraints = constraints;
             if (constraints.has(JFCConstants.Props.query_must.toString())) {
-              JSONObject json = constraints.getJSONObject(JFCConstants.Props.query_must.toString());
-              Iterator<String> keys = json.keys();
-              while (keys.hasNext()) {
-                String key = keys.next();
-                JSONArray array = json.getJSONArray(key);
-                esQuery.must(key, JsonUtil.toArray(array));                
-              }
+                JSONObject json = constraints.getJSONObject(JFCConstants.Props.query_must.toString());
+                Iterator<String> keys = json.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONArray array = json.getJSONArray(key);
+                    esQuery.must(key, JsonUtil.toArray(array));
+                }
             }
-            
+
             if (constraints.has(JFCConstants.Props.query_should.toString())) {
-              JSONObject json = constraints.getJSONObject(JFCConstants.Props.query_should.toString());
-              Iterator<String> keys = json.keys();
-              while (keys.hasNext()) {
-                String key = keys.next();
-                JSONArray array = json.getJSONArray(key);
-                esQuery.should(key, JsonUtil.toArray(array));                
-              }
-            }            
+                JSONObject json = constraints.getJSONObject(JFCConstants.Props.query_should.toString());
+                Iterator<String> keys = json.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONArray array = json.getJSONArray(key);
+                    esQuery.should(key, JsonUtil.toArray(array));
+                }
+            }
             return this;
         }
 
@@ -217,7 +210,7 @@ public class JFElasticSearchCmdQuery extends JFCommand{
 
         public JFElasticSearchCmdQuery build() {
             ESSearchQuery dbquery = esQuery.build();
-            System.out.println ("The ESQuery " + dbquery);
+            System.out.println("The ESQuery " + dbquery);
             JFElasticSearchCmdQuery query = new JFElasticSearchCmdQuery(collectionName, dbquery, null);
             return query;
         }

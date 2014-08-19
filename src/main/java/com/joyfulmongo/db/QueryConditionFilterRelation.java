@@ -16,111 +16,96 @@
 */
 package com.joyfulmongo.db;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
+public class QueryConditionFilterRelation implements QueryConditionFilter {
+    public static final String S_KEY = "$relatedTo";
 
-public class QueryConditionFilterRelation implements QueryConditionFilter
-{
-  public static final String S_KEY = "$relatedTo";
-  
-  private JSONObject relatedTo;
-  
-  public enum Props
-  {
-    key, object, objects,
-  }
-  
-  public static boolean isRelationQuery(JSONObject constraints)
-  {
-    Object obj = constraints.opt(S_KEY);
-    return (obj != null);
-  }
-  
-  private JFMongoCmdQuery.Builder origBuilder;
-  
-  public QueryConditionFilterRelation(JFMongoCmdQuery.Builder builder)
-  {
-    origBuilder = builder;
-  }
-  
-  public List<String> getRelationObjectIds()
-  {
-    ContainerObjectPointer referralPointer = getReferalPointer();
-    
-    JFMongoCmdQuery.Builder newBuilder = new JFMongoCmdQuery.Builder(
-        JFMongoRelationship.S_METADATA_COLLNAME);
-    newBuilder.whereEquals(JFMongoRelationship.Props.relClassName.toString(),
-        referralPointer.getClassName());
-    newBuilder.whereEquals(JFMongoRelationship.Props.relObjectId.toString(),
-        referralPointer.getObjectId());
-    newBuilder.whereEquals(JFMongoRelationship.Props.relKey.toString(),
-        getRelationKey());
-    
-    JFMongoCmdQuery query = newBuilder.build();
-    List<JFMongoObject> objs = query.find();
-    
-    List<String> result = new ArrayList<String>(0);
-    for (JFMongoObject obj : objs)
-    {
-      JSONObject json = obj.toJson();
-      String pointedObjId = json
-          .getString(JFMongoRelationship.Props.pointerObjectId.toString());
-      result.add(pointedObjId);
+    private JSONObject relatedTo;
+
+    public enum Props {
+        key, object, objects,
     }
-    return result;
-  }
-  
-  private JSONObject getRelatedTo()
-  {
-    if (relatedTo == null)
-    {
-      JSONObject constraints = origBuilder.getConstraints();
-      relatedTo = constraints.optJSONObject(S_KEY);
-      if (relatedTo == null)
-      {
-        throw new IllegalArgumentException(
-            "The original builder constraint is not a relatedTo constraints");
-      }
+
+    public static boolean isRelationQuery(JSONObject constraints) {
+        Object obj = constraints.opt(S_KEY);
+        return (obj != null);
     }
-    return relatedTo;
-  }
-  
-  public String getRelationKey()
-  {
-    JSONObject json = getRelatedTo();
-    return json.getString(Props.key.toString());
-  }
-  
-  public ContainerObjectPointer getReferalPointer()
-  {
-    JSONObject json = getRelatedTo();
-    JSONObject object = json.getJSONObject(Props.object.toString());
-    return new ContainerObjectPointer(null, object);
-  }
-  
-  public static void adjustConstraints(JSONObject constraints)
-  {
-    constraints.remove(S_KEY);
-  }
-  
-  public String getRedirectClassNameForKey(String thekey)
-  {
-    String result = null;
-    ContainerObjectPointer pointer = getReferalPointer();
-    JFMongoObject obj = pointer.getRefereeObject();
-    Object json = obj.opt(thekey);
-    if (json != null)
-    {
-      ContainerObject childObj = ContainerObjectFactory.getChildObject(thekey,
-          json);
-      if (childObj instanceof ContainerObjectRelation)
-      {
-        result = ((ContainerObjectRelation) childObj).getClassname();
-      }
+
+    private JFMongoCmdQuery.Builder origBuilder;
+
+    public QueryConditionFilterRelation(JFMongoCmdQuery.Builder builder) {
+        origBuilder = builder;
     }
-    
-    return result;
-  }
+
+    public List<String> getRelationObjectIds() {
+        ContainerObjectPointer referralPointer = getReferalPointer();
+
+        JFMongoCmdQuery.Builder newBuilder = new JFMongoCmdQuery.Builder(
+                JFMongoRelationship.S_METADATA_COLLNAME);
+        newBuilder.whereEquals(JFMongoRelationship.Props.relClassName.toString(),
+                referralPointer.getClassName());
+        newBuilder.whereEquals(JFMongoRelationship.Props.relObjectId.toString(),
+                referralPointer.getObjectId());
+        newBuilder.whereEquals(JFMongoRelationship.Props.relKey.toString(),
+                getRelationKey());
+
+        JFMongoCmdQuery query = newBuilder.build();
+        List<JFMongoObject> objs = query.find();
+
+        List<String> result = new ArrayList<String>(0);
+        for (JFMongoObject obj : objs) {
+            JSONObject json = obj.toJson();
+            String pointedObjId = json
+                    .getString(JFMongoRelationship.Props.pointerObjectId.toString());
+            result.add(pointedObjId);
+        }
+        return result;
+    }
+
+    private JSONObject getRelatedTo() {
+        if (relatedTo == null) {
+            JSONObject constraints = origBuilder.getConstraints();
+            relatedTo = constraints.optJSONObject(S_KEY);
+            if (relatedTo == null) {
+                throw new IllegalArgumentException(
+                        "The original builder constraint is not a relatedTo constraints");
+            }
+        }
+        return relatedTo;
+    }
+
+    public String getRelationKey() {
+        JSONObject json = getRelatedTo();
+        return json.getString(Props.key.toString());
+    }
+
+    public ContainerObjectPointer getReferalPointer() {
+        JSONObject json = getRelatedTo();
+        JSONObject object = json.getJSONObject(Props.object.toString());
+        return new ContainerObjectPointer(null, object);
+    }
+
+    public static void adjustConstraints(JSONObject constraints) {
+        constraints.remove(S_KEY);
+    }
+
+    public String getRedirectClassNameForKey(String thekey) {
+        String result = null;
+        ContainerObjectPointer pointer = getReferalPointer();
+        JFMongoObject obj = pointer.getRefereeObject();
+        Object json = obj.opt(thekey);
+        if (json != null) {
+            ContainerObject childObj = ContainerObjectFactory.getChildObject(thekey,
+                    json);
+            if (childObj instanceof ContainerObjectRelation) {
+                result = ((ContainerObjectRelation) childObj).getClassname();
+            }
+        }
+
+        return result;
+    }
 }

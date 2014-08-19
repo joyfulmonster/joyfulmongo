@@ -18,25 +18,24 @@ package com.joyfulmongo.db;
 
 import org.json.JSONObject;
 
-public interface ContainerObject
-{
-  
-  /**
-   * Callback on create
-   * 
-   * @param joyObject
-   */
-  void onCreate(String collectionName, JSONObject joyObject);
-  
-  /**
-   * Callback on update
-   * 
-   * @param joyObject
-   */
-  void onUpdate(String collectionName, JSONObject joyObject);
-  
-  /*
-   * 
-   */
-  void onQuery(String collectionName, JSONObject joyObject);
+public interface ContainerObject {
+
+    /**
+     * Callback on create
+     *
+     * @param joyObject
+     */
+    void onCreate(String collectionName, JSONObject joyObject);
+
+    /**
+     * Callback on update
+     *
+     * @param joyObject
+     */
+    void onUpdate(String collectionName, JSONObject joyObject);
+
+    /*
+     *
+     */
+    void onQuery(String collectionName, JSONObject joyObject);
 }

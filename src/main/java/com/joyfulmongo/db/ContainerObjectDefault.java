@@ -16,33 +16,27 @@
 */
 package com.joyfulmongo.db;
 
+import com.joyfulmongo.controller.JSONObjectSupport;
 import org.json.JSONObject;
 
-import com.joyfulmongo.controller.JSONObjectSupport;
-
 public class ContainerObjectDefault extends JSONObjectSupport implements
-    ContainerObject
-{
-  public ContainerObjectDefault(String key, JSONObject json)
-  {
-    super(json);
-  }
-  
-  @Override
-  public void onCreate(String colname, JSONObject joyObject)
-  {
-    // do nothing
-  }
-  
-  @Override
-  public void onUpdate(String colname, JSONObject joyObject)
-  {
-    // do nothing
-  }
+        ContainerObject {
+    public ContainerObjectDefault(String key, JSONObject json) {
+        super(json);
+    }
 
-  @Override
-  public void onQuery(String collectionName, JSONObject joyObject)
-  {
-    
-  }
+    @Override
+    public void onCreate(String colname, JSONObject joyObject) {
+        // do nothing
+    }
+
+    @Override
+    public void onUpdate(String colname, JSONObject joyObject) {
+        // do nothing
+    }
+
+    @Override
+    public void onQuery(String collectionName, JSONObject joyObject) {
+
+    }
 }

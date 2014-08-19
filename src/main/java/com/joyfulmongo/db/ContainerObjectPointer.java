@@ -16,85 +16,71 @@
 */
 package com.joyfulmongo.db;
 
+import com.joyfulmongo.controller.JSONObjectSupport;
+import org.json.JSONObject;
+
 import java.util.Iterator;
 import java.util.List;
 
-import org.json.JSONObject;
-
-import com.joyfulmongo.controller.JSONObjectSupport;
-
 public class ContainerObjectPointer extends JSONObjectSupport implements
-    ContainerObject
-{
-  public enum Props
-  {
-    objectId, className;
-  }
-  
-  ContainerObjectPointer(String key, JSONObject json)
-  {
-    super(json);
-  }
-  
-  @Override
-  public void onCreate(String colname, JSONObject joyObject)
-  {
-  }
-  
-  @Override
-  public void onUpdate(String colname, JSONObject joyObject)
-  {
-  }
-  
-  @Override
-  public void onQuery(String collectionName, JSONObject joyObject)
-  {    
-  }
-  
-  public String getClassName()
-  {
-    return mObj.getString(Props.className.toString());
-  }
-  
-  public String getObjectId()
-  {
-    return mObj.getString(Props.objectId.toString());
-  }
-  
-  public JFMongoObject getRefereeObject()
-  {
-    JFMongoCmdQuery.Builder queryBuilder = new JFMongoCmdQuery.Builder(
-        getClassName());
-    
-    queryBuilder
-        .whereEquals(Constants.Props.objectId.toString(), getObjectId());
-    
-    List<JFMongoObject> joyObjects = queryBuilder.build().find();
-    
-    JFMongoObject result = null;
-    if (joyObjects.size() > 0)
-    {
-      result = joyObjects.get(0);
-    } else
-    {
-      throw new IllegalArgumentException(
-          "The pointer points to a non existing objectid " + getObjectId());
+        ContainerObject {
+    public enum Props {
+        objectId, className;
     }
-    
-    return result;
-  }
-  
-  public void replaceObject(JFMongoObject refereeObject)
-  {
-    mObj.put(ContainerObjectFactory.TypeProps.__type.toString(),
-        ContainerObjectFactory.TypeType.Object.toString());
-    mObj.remove(Props.objectId.toString());
-    JSONObject theObj = refereeObject.toJson();
-    Iterator<String> keys = theObj.keys();
-    while (keys.hasNext())
-    {
-      String key = keys.next();
-      mObj.put(key, theObj.get(key));
+
+    ContainerObjectPointer(String key, JSONObject json) {
+        super(json);
     }
-  }
+
+    @Override
+    public void onCreate(String colname, JSONObject joyObject) {
+    }
+
+    @Override
+    public void onUpdate(String colname, JSONObject joyObject) {
+    }
+
+    @Override
+    public void onQuery(String collectionName, JSONObject joyObject) {
+    }
+
+    public String getClassName() {
+        return mObj.getString(Props.className.toString());
+    }
+
+    public String getObjectId() {
+        return mObj.getString(Props.objectId.toString());
+    }
+
+    public JFMongoObject getRefereeObject() {
+        JFMongoCmdQuery.Builder queryBuilder = new JFMongoCmdQuery.Builder(
+                getClassName());
+
+        queryBuilder
+                .whereEquals(Constants.Props.objectId.toString(), getObjectId());
+
+        List<JFMongoObject> joyObjects = queryBuilder.build().find();
+
+        JFMongoObject result = null;
+        if (joyObjects.size() > 0) {
+            result = joyObjects.get(0);
+        } else {
+            throw new IllegalArgumentException(
+                    "The pointer points to a non existing objectid " + getObjectId());
+        }
+
+        return result;
+    }
+
+    public void replaceObject(JFMongoObject refereeObject) {
+        mObj.put(ContainerObjectFactory.TypeProps.__type.toString(),
+                ContainerObjectFactory.TypeType.Object.toString());
+        mObj.remove(Props.objectId.toString());
+        JSONObject theObj = refereeObject.toJson();
+        Iterator<String> keys = theObj.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            mObj.put(key, theObj.get(key));
+        }
+    }
 }

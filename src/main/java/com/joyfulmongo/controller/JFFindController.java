@@ -16,70 +16,63 @@
 */
 package com.joyfulmongo.controller;
 
+import com.joyfulmongo.db.JFElasticSearchCmdQuery;
+import com.joyfulmongo.db.JFMongoCmdQuery;
+import com.joyfulmongo.db.JFMongoObject;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.joyfulmongo.db.JFElasticSearchCmdQuery;
-import com.joyfulmongo.db.JFMongoCmdQuery;
+public class JFFindController extends JFController<JFFindInput, JFFindOutput> {
+    private static Logger LOGGER = Logger.getLogger(JFFindController.class.getName());
 
-import org.json.JSONObject;
+    @Override
+    public JFFindOutput process(JFFindInput input) {
+        String colName = input.getClassname();
 
-import com.joyfulmongo.db.JFMongoObject;
+        String sort = input.getOrder();
+        String[] includes = input.getIncludes();
 
-public class JFFindController extends JFController<JFFindInput, JFFindOutput>
-{
-  private static Logger LOGGER = Logger.getLogger(JFFindController.class.getName());
-  
-  @Override
-  public JFFindOutput process(JFFindInput input)
-  {
-    String colName = input.getClassname();
-    
-    String sort = input.getOrder();
-    String[] includes = input.getIncludes();
-    
-    int limit = input.getLimit();
-    int skip = input.getSkip();
-    
-    String redirectClassNameForKey = input.getRedirectClassNameForKey();
+        int limit = input.getLimit();
+        int skip = input.getSkip();
 
-    JSONObject condition = input.getData();
-    List<JFMongoObject> results = null;
+        String redirectClassNameForKey = input.getRedirectClassNameForKey();
 
-    boolean hasQuery = condition.has(JFCConstants.Props.query_must.toString()) || condition.has(JFCConstants.Props.query_should.toString());;
-    if (false){
-        LOGGER.log(Level.INFO, "Full Text Search Condition " + condition);
-        JFElasticSearchCmdQuery query = new JFElasticSearchCmdQuery.Builder(colName).
-                constraints(condition).                
-                limit(limit).
-                skip(skip).
-                include(includes).
-                sort(sort).
-                build();
+        JSONObject condition = input.getData();
+        List<JFMongoObject> results = null;
 
-        results = query.find();
+        boolean hasQuery = condition.has(JFCConstants.Props.query_must.toString()) || condition.has(JFCConstants.Props.query_should.toString());
+        ;
+        if (false) {
+            LOGGER.log(Level.INFO, "Full Text Search Condition " + condition);
+            JFElasticSearchCmdQuery query = new JFElasticSearchCmdQuery.Builder(colName).
+                    constraints(condition).
+                    limit(limit).
+                    skip(skip).
+                    include(includes).
+                    sort(sort).
+                    build();
+
+            results = query.find();
+        } else {
+            JFMongoCmdQuery query = new JFMongoCmdQuery.Builder(colName).
+                    constraints(condition).
+                    limit(limit).
+                    skip(skip).
+                    include(includes).
+                    sort(sort).
+                    redirectClassNameForKey(redirectClassNameForKey).
+                    build();
+            results = query.find();
+        }
+
+        if (results == null) {
+            throw new JFUserError(101, "object not found for get");
+        } else {
+            JFFindOutput output = new JFFindOutput(results);
+            return output;
+        }
     }
-    else {
-       JFMongoCmdQuery query = new JFMongoCmdQuery.Builder(colName).
-                  constraints(condition).
-                  limit(limit).
-                  skip(skip).
-                  include(includes).
-                  sort(sort).
-                  redirectClassNameForKey(redirectClassNameForKey).
-                  build();
-        results = query.find();
-    }
-
-    if (results == null)
-    {
-      throw new JFUserError(101, "object not found for get");
-    }
-    else
-    {
-      JFFindOutput output = new JFFindOutput(results);
-      return output;
-    }
-  }
 }

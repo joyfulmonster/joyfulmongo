@@ -16,50 +16,45 @@
 */
 package com.joyfulmongo.db;
 
-import java.util.Date;
-
 import com.joyfulmongo.db.javadriver.MongoCollection;
 import com.joyfulmongo.db.javadriver.MongoCollectionFactory;
 import org.json.JSONObject;
 
-class JFMongoCmdUpsert extends JFCommand
-{
-  private JSONObject updates;
-  private JSONObject query;
-  private String colname;
-  
-  JFMongoCmdUpsert(String colname, JSONObject query, JSONObject updates)
-  {
-    this.query = query;
-    this.updates = updates;
-    this.colname = colname;
-  }
-  
-  @Override
-  protected void beforeExecute()
-  {
-  }
-  
-  @Override
-  protected JFMongoCmdResult execute()
-  {
-    JFMongoCmdResult result = new JFMongoCmdResult();
-    
-    Date now = Utils.getCurrentTime();
-    updates.put(Constants.Props.updatedAt.toString(), now);
-    
-    MongoCollection collection = MongoCollectionFactory.getInstance()
-        .getCollection(colname);
-    collection.upsert(query, updates);
-    
-    result.setUpdatedAt(now);
-    
-    return result;
-  }
-  
-  @Override
-  protected JFMongoCmdResult afterExecute(JFMongoCmdResult executeResult)
-  {
-    return executeResult;
-  }
+import java.util.Date;
+
+class JFMongoCmdUpsert extends JFCommand {
+    private JSONObject updates;
+    private JSONObject query;
+    private String colname;
+
+    JFMongoCmdUpsert(String colname, JSONObject query, JSONObject updates) {
+        this.query = query;
+        this.updates = updates;
+        this.colname = colname;
+    }
+
+    @Override
+    protected void beforeExecute() {
+    }
+
+    @Override
+    protected JFMongoCmdResult execute() {
+        JFMongoCmdResult result = new JFMongoCmdResult();
+
+        Date now = Utils.getCurrentTime();
+        updates.put(Constants.Props.updatedAt.toString(), now);
+
+        MongoCollection collection = MongoCollectionFactory.getInstance()
+                .getCollection(colname);
+        collection.upsert(query, updates);
+
+        result.setUpdatedAt(now);
+
+        return result;
+    }
+
+    @Override
+    protected JFMongoCmdResult afterExecute(JFMongoCmdResult executeResult) {
+        return executeResult;
+    }
 }

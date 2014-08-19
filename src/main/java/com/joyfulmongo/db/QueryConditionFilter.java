@@ -16,6 +16,5 @@
 */
 package com.joyfulmongo.db;
 
-public interface QueryConditionFilter
-{
+public interface QueryConditionFilter {
 }

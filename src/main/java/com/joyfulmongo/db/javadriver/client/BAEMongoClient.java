@@ -1,31 +1,26 @@
 package com.joyfulmongo.db.javadriver.client;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+
 import java.util.logging.Logger;
 
 //import com.baidu.bae.api.util.BaeEnv;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
 
-public class BAEMongoClient implements JFMongoClient
-{
-  private static Logger LOGGER = Logger
-      .getLogger(JFMongoClient.class.getName());
-  
-  /*
-   * private static String baeUsername = BaeEnv.getBaeHeader(BaeEnv.BAE_ENV_AK);
-   * private static String baePassword = BaeEnv.getBaeHeader(BaeEnv.BAE_ENV_SK);
-   */
-  private static String baeDatabaseName = "GsWZNgpfdpHWPyeTeiSy";
-  
-  private static MongoClient mongoClient;
-  
-  @Override
-  public MongoClient getMongoClient()
-  {
+public class BAEMongoClient implements JFMongoClient {
+    private static Logger LOGGER = Logger
+            .getLogger(JFMongoClient.class.getName());
+
+    /*
+     * private static String baeUsername = BaeEnv.getBaeHeader(BaeEnv.BAE_ENV_AK);
+     * private static String baePassword = BaeEnv.getBaeHeader(BaeEnv.BAE_ENV_SK);
+     */
+    private static String baeDatabaseName = "GsWZNgpfdpHWPyeTeiSy";
+
+    private static MongoClient mongoClient;
+
+    @Override
+    public MongoClient getMongoClient() {
     /*
      * String serverName; //String baeHost =
      * BaeEnv.getBaeHeader(BaeEnv.BAE_ENV_ADDR_MONGO_IP); //String baePort =
@@ -44,21 +39,19 @@ public class BAEMongoClient implements JFMongoClient
      * 
      * return mongoClient;
      */
-    return null;
-  }
-  
-  @Override
-  public String getDBName()
-  {
-    return baeDatabaseName;
-  }
-  
-  @Override
-  public DB getMongoDB()
-  {
-    MongoClient client = getMongoClient();
-    DB mongoDB = client.getDB(getDBName());
-    // mongoDB.authenticate(baeUsername, baePassword.toCharArray());
-    return mongoDB;
-  }
+        return null;
+    }
+
+    @Override
+    public String getDBName() {
+        return baeDatabaseName;
+    }
+
+    @Override
+    public DB getMongoDB() {
+        MongoClient client = getMongoClient();
+        DB mongoDB = client.getDB(getDBName());
+        // mongoDB.authenticate(baeUsername, baePassword.toCharArray());
+        return mongoDB;
+    }
 }

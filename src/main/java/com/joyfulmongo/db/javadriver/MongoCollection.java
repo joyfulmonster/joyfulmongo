@@ -17,175 +17,147 @@
 
 package com.joyfulmongo.db.javadriver;
 
+import com.joyfulmongo.db.Constants;
+import com.joyfulmongo.db.ContainerObjectGeoPoint;
+import com.mongodb.*;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONObject;
+public class MongoCollection {
+    protected static Logger LOGGER = Logger.getLogger(MongoCollection.class
+            .getName());
 
-import com.joyfulmongo.db.ContainerObjectGeoPoint;
-import com.joyfulmongo.db.Constants;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
+    private String colName;
+    private DBCollection dbCollection;
 
-public class MongoCollection
-{
-  protected static Logger LOGGER = Logger.getLogger(MongoCollection.class
-      .getName());
-  
-  private String colName;
-  private DBCollection dbCollection;
-  
-  MongoCollection(String name, DBCollection collection)
-  {
-    this.colName = name;
-    this.dbCollection = collection;
-  }
-  
-  public void ensureIndex(String key, boolean ascend)
-  {    
-  }
-  
-  public void create(JSONObject creates)
-  {
-    MongoObject newDBObj = new MongoObject(colName, creates);
-    
-    DBObject dbObject = newDBObj.getDBObject();
-        
-    dbCollection.ensureIndex(Constants.Props.objectId.toString());
-    ensure2DIndexIfExist(creates);
-    
-    WriteResult result = dbCollection.insert(dbObject, WriteConcern.SAFE);
-    
-    recordWriteResult("create", result);
-  }
-  
-  public void update(JSONObject query, JSONObject updates)
-  {
-    JSONObject extraInstruction = null;
-        
-    List<String> modifiers = findModifiers(updates);
-    for (String modifier : modifiers)
-    {
-      if (extraInstruction == null)
-      {
-        extraInstruction = new JSONObject();
-      }
-      if (LOGGER.isLoggable(Level.FINE))
-      {
-        LOGGER.fine("UPDATE modifier=" + modifier + " " + extraInstruction);
-      }
-      Object o = updates.get(modifier);
-      extraInstruction.put(modifier, o);
+    MongoCollection(String name, DBCollection collection) {
+        this.colName = name;
+        this.dbCollection = collection;
     }
-    
-    for (String modifier : modifiers)
-    {
-      updates.remove(modifier);
+
+    public void ensureIndex(String key, boolean ascend) {
     }
-    
-    this.ensure2DIndexIfExist(updates);
-    
-    MongoObject queryObj = new MongoObject(colName, query);
-    DBObject queryDBObject = queryObj.getDBObject();
-    
-    WriteResult result = null;
-    {
-      if (LOGGER.isLoggable(Level.FINE))
-      {
-        LOGGER.fine("UPDATE =" + " " + updates);
-      }
-      JSONObject updateInstruction = new JSONObject();
-      updateInstruction.put("$set", updates);
-      MongoObject jfObj = new MongoObject(colName, updateInstruction);
-      DBObject updateDBObject = jfObj.getDBObject();
-      
-      result = dbCollection.update(queryDBObject, updateDBObject, false, false, WriteConcern.SAFE);
+
+    public void create(JSONObject creates) {
+        MongoObject newDBObj = new MongoObject(colName, creates);
+
+        DBObject dbObject = newDBObj.getDBObject();
+
+        dbCollection.ensureIndex(Constants.Props.objectId.toString());
+        ensure2DIndexIfExist(creates);
+
+        WriteResult result = dbCollection.insert(dbObject, WriteConcern.SAFE);
+
+        recordWriteResult("create", result);
     }
-    
-    if (extraInstruction != null)
-    {
-      MongoObject jfObj = new MongoObject(colName, extraInstruction);
-      DBObject updateInstructionObject = jfObj.getDBObject();
-      result = dbCollection.update(queryDBObject, updateInstructionObject,
-          false, false, WriteConcern.SAFE);
+
+    public void update(JSONObject query, JSONObject updates) {
+        JSONObject extraInstruction = null;
+
+        List<String> modifiers = findModifiers(updates);
+        for (String modifier : modifiers) {
+            if (extraInstruction == null) {
+                extraInstruction = new JSONObject();
+            }
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("UPDATE modifier=" + modifier + " " + extraInstruction);
+            }
+            Object o = updates.get(modifier);
+            extraInstruction.put(modifier, o);
+        }
+
+        for (String modifier : modifiers) {
+            updates.remove(modifier);
+        }
+
+        this.ensure2DIndexIfExist(updates);
+
+        MongoObject queryObj = new MongoObject(colName, query);
+        DBObject queryDBObject = queryObj.getDBObject();
+
+        WriteResult result = null;
+        {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("UPDATE =" + " " + updates);
+            }
+            JSONObject updateInstruction = new JSONObject();
+            updateInstruction.put("$set", updates);
+            MongoObject jfObj = new MongoObject(colName, updateInstruction);
+            DBObject updateDBObject = jfObj.getDBObject();
+
+            result = dbCollection.update(queryDBObject, updateDBObject, false, false, WriteConcern.SAFE);
+        }
+
+        if (extraInstruction != null) {
+            MongoObject jfObj = new MongoObject(colName, extraInstruction);
+            DBObject updateInstructionObject = jfObj.getDBObject();
+            result = dbCollection.update(queryDBObject, updateInstructionObject,
+                    false, false, WriteConcern.SAFE);
+        }
+
+        recordWriteResult("update", result);
     }
-    
-    recordWriteResult("update", result);
-  }
-  
-  public void upsert(JSONObject query, JSONObject updates)
-  {
-    MongoObject queryObj = new MongoObject(colName, query);
-    DBObject queryDBObject = queryObj.getDBObject();
-      
-    MongoObject jfObj = new MongoObject(colName, updates);
-    DBObject updateDBObject = jfObj.getDBObject();
-      
-    DBObject oldValue = dbCollection.findAndModify(queryDBObject, null, null,
-        false, updateDBObject, false, true);
-  }
-  
-  private List<String> findModifiers(JSONObject updateDelta)
-  {
-    List<String> modifiers = new ArrayList<String>(0);
-    Iterator<String> keys = updateDelta.keys();
-    while (keys.hasNext())
-    {
-      String key = keys.next();
-      if (key.startsWith("$"))
-      {
-        modifiers.add(key);
-      }
+
+    public void upsert(JSONObject query, JSONObject updates) {
+        MongoObject queryObj = new MongoObject(colName, query);
+        DBObject queryDBObject = queryObj.getDBObject();
+
+        MongoObject jfObj = new MongoObject(colName, updates);
+        DBObject updateDBObject = jfObj.getDBObject();
+
+        DBObject oldValue = dbCollection.findAndModify(queryDBObject, null, null,
+                false, updateDBObject, false, true);
     }
-    
-    return modifiers;
-  }
-  
-  public void delete(JSONObject obj)
-  {
-    String objectId = (String) obj.get(Constants.Props.objectId.toString());
-    if (objectId == null || objectId.length() == 0)
-    {
-      throw new IllegalArgumentException("ObjectId can not be null or empty.");
-    } else
-    {
-      DBObject queryCondition = new BasicDBObject();
-      
-      queryCondition.put(Constants.Props.objectId.toString(), objectId);
-      
-      WriteResult result = dbCollection.remove(queryCondition,
-          WriteConcern.SAFE);
-      
-      recordWriteResult("delete", result);
+
+    private List<String> findModifiers(JSONObject updateDelta) {
+        List<String> modifiers = new ArrayList<String>(0);
+        Iterator<String> keys = updateDelta.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith("$")) {
+                modifiers.add(key);
+            }
+        }
+
+        return modifiers;
     }
-  }
-  
-  private void recordWriteResult(String msg, WriteResult result)
-  {
-    if (LOGGER.isLoggable(Level.FINE))
-    {
-      LOGGER.log(Level.FINE, msg + " Write result is " + result);
+
+    public void delete(JSONObject obj) {
+        String objectId = (String) obj.get(Constants.Props.objectId.toString());
+        if (objectId == null || objectId.length() == 0) {
+            throw new IllegalArgumentException("ObjectId can not be null or empty.");
+        } else {
+            DBObject queryCondition = new BasicDBObject();
+
+            queryCondition.put(Constants.Props.objectId.toString(), objectId);
+
+            WriteResult result = dbCollection.remove(queryCondition,
+                    WriteConcern.SAFE);
+
+            recordWriteResult("delete", result);
+        }
     }
-  }
-  
-  private void ensure2DIndexIfExist(JSONObject payload)
-  {
-    Object geoPoint = payload.opt(ContainerObjectGeoPoint.S_GEO_POINT);
-    if (geoPoint != null)
-    {
-      if (LOGGER.isLoggable(Level.FINE))
-      {
-        LOGGER.fine("create EnsureIndex " + ContainerObjectGeoPoint.S_GEO_POINT);
-      }
-      DBObject indexObj = new BasicDBObject();
-      indexObj.put(ContainerObjectGeoPoint.S_GEO_POINT, "2d");
-      dbCollection.ensureIndex(indexObj);
-    }    
-  }
+
+    private void recordWriteResult(String msg, WriteResult result) {
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, msg + " Write result is " + result);
+        }
+    }
+
+    private void ensure2DIndexIfExist(JSONObject payload) {
+        Object geoPoint = payload.opt(ContainerObjectGeoPoint.S_GEO_POINT);
+        if (geoPoint != null) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("create EnsureIndex " + ContainerObjectGeoPoint.S_GEO_POINT);
+            }
+            DBObject indexObj = new BasicDBObject();
+            indexObj.put(ContainerObjectGeoPoint.S_GEO_POINT, "2d");
+            dbCollection.ensureIndex(indexObj);
+        }
+    }
 }

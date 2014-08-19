@@ -16,8 +16,14 @@
 
 package com.joyfulmongo.webservice;
 
+import org.glassfish.jersey.server.ResourceConfig;
+
 /**
- * Created by wbao on 6/2/2014.
+ * Created by wbao on 8/18/2014.
  */
-public class CollectionResources {
+public class JoyfulApplication extends ResourceConfig {
+    public JoyfulApplication() {
+        super();
+
+    }
 }

@@ -17,41 +17,34 @@
 
 package com.joyfulmongo.db.javadriver;
 
+import com.mongodb.DBObject;
 import org.json.JSONObject;
 
-import com.mongodb.DBObject;
-
 @SuppressWarnings("serial")
-public class MongoObject
-{
-  private String collectionName;
-  private DBObject dbObject;
-  
-  public MongoObject(String collection, JSONObject json)
-  {
-    collectionName = collection;
-    dbObject = MongoDBUtil.toDBObject(json);
-  }
-  
-  public MongoObject(String collection, DBObject obj)
-  {
-    collectionName = collection;
-    dbObject = obj;
-  }
-  
-  public JSONObject toJson()
-  {
-    JSONObject result = MongoDBUtil.toJSONObject(dbObject);
-    return result;
-  }
-  
-  public DBObject getDBObject()
-  {
-    return this.dbObject;
-  }
-  
-  public String getCollectionName()
-  {
-    return this.collectionName;
-  }
+public class MongoObject {
+    private String collectionName;
+    private DBObject dbObject;
+
+    public MongoObject(String collection, JSONObject json) {
+        collectionName = collection;
+        dbObject = MongoDBUtil.toDBObject(json);
+    }
+
+    public MongoObject(String collection, DBObject obj) {
+        collectionName = collection;
+        dbObject = obj;
+    }
+
+    public JSONObject toJson() {
+        JSONObject result = MongoDBUtil.toJSONObject(dbObject);
+        return result;
+    }
+
+    public DBObject getDBObject() {
+        return this.dbObject;
+    }
+
+    public String getCollectionName() {
+        return this.collectionName;
+    }
 }
