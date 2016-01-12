@@ -41,15 +41,22 @@ In the situation that there are huge amount of data and highly concurrent access
 
 # Design 
 
-There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will not touch that.  The focus of this design is to provide a implementation that meet following goals by tweaking the hashmap stoage resizing mechansim.
+There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will not touch that.  The focus of this design is to provide a implementation that meet following goals by tweaking the hashmap stoage resizing mechanism.
 
 * dynamically scalable
 * highly concurrent and thread safe
 * highly available
 
+The idea is to leverage the extendiable hashing algorithm (https://en.wikipedia.org/wiki/Extendible_hashing) to manage a collection of small buckets to provide:
+
+1. fine-grained parallel locking 
+2. incremental resizing
+
 ## Extendiable Hashing
 
-Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  Its size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode.  The number of bits called the depth of  bucket.  The actual data are stored on one of the buckets.   One bucket is a small hashtable.   When a Bucket is overflow, a Split needs to be done to resize the storage.
+Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  Its size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode.  The number of bits called the depth of  bucket.  The actual data are stored on one of the buckets.   One bucket is a small hashtable.  When a Bucket is overflow, a Split needs to be done to resize the storage.
+
+### Operation Steps
 
 The following is the steps of put(K, V) operation:
 
@@ -92,6 +99,26 @@ The following is the steps of remove(K) operation:
 
 # Implementation Details
 
+*This implementation packaged in joyfulmonster.zip focus on implementing the core algorithm of the extendible hashing.  The org.joyfulmonster.util.ConcurrentExtendiableHashMap API definition was borrowed from java.util.concurrent.ConcurrentMap, but I didn't try to do full implementation of ConcurrentMap*
 
+## package structure
+
+Source Code:
+
+src\main\java\org\joyfulmonster\util\ConcurrentExtendiableHashMap.java
+src\main\java\org\joyfulmonster\util\internal\ConcurrentExtendiableHashMapImpl.java
+src\main\java\org\joyfulmonster\util\internal\Bucket.java
+src\main\java\org\joyfulmonster\util\internal\BucketFactory.java
+src\main\java\org\joyfulmonster\util\internal\BucketOverflowError.java
+src\main\java\org\joyfulmonster\util\internal\Directory.java
+src\main\java\org\joyfulmonster\util\internal\HashEntry.java
+src\main\java\org\joyfulmonster\util\internal\HashStrategy.java
+src\main\java\org\joyfulmonster\util\internal\LinearProbingBucketImpl.java
+
+Test Code:
+
+src\test\java\org\joyfulmonster\util\BasicTest.java
+src\test\java\org\joyfulmonster\util\ConcurrencyTest.java
+src\test\java\org\joyfulmonster\util\RandomStringSet.java
 
 # Future Improvement
