@@ -41,6 +41,28 @@ In the situation that there are huge amount of data and highly concurrent access
 
 # Design 
 
+There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will not touch that.  The focus of this design is to provide a implementation that meet following goals by tweaking the hashmap stoage resizing mechansim.
+
+* dynamically scalable
+* highly concurrent and thread safe
+* highly available
+
+## Extendiable Hashing
+
+Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  Its size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode.  The number of bits called the depth of  bucket.  The actual data are stored on one of the buckets.   One bucket is a small hashtable.
+
+When a Bucket is overflow, a Split needs to be done to resize the storage.  The split operations do the following:
+
+* Allocate two new buckets.  Typically a bucket has small memory footprint, the allocation can be easily satisfied.
+* Mark the old bucket invalid and disallow further write
+** Spread the old bucket entries into the two new buckets.
+** Lock the Directory
+*** If the new bucket local depth outgrow the depth of the Directory, then double the Directory size and rewire the existing bucket pointers to teh new Directory.
+*** Register the two new buckets.
+** Unlock the Directory
+
+
+
 # Implementation Details
 
 # Future
