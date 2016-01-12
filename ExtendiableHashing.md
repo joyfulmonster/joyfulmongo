@@ -53,7 +53,7 @@ Extendible hashing uses a Directory to manage a list of Buckets.  A Directory co
 
 The following is a pseudocode of put(K, V) operation:
 
-
+```
 The split operation does the following:
 
 * Allocate two new buckets.  Typically a bucket has small memory footprint, the allocation can be easily satisfied
@@ -63,6 +63,10 @@ The split operation does the following:
 * If the new bucket local depth outgrow the depth of the Directory, then double the Directory size and rewire the existing bucket pointers to teh new Directory.
 * Register the two new buckets.
 * Unlock the Directory
+
+```
+
+
 
 
 
