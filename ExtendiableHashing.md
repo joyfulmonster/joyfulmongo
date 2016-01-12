@@ -49,14 +49,13 @@ There are a lot methmatical research on how to build a high efficient evenly dis
 * highly concurrent and thread safe
 * highly available
 
-The idea is to leverage the extendiable hashing algorithm (https://en.wikipedia.org/wiki/Extendible_hashing) to manage a collection of small buckets to provide:
-
-* fine-grained parallel locking 
-* incremental resizing
+The idea is to leverage the extendiable hashing algorithm (https://en.wikipedia.org/wiki/Extendible_hashing) to manage a collection of small buckets to provide fine-grained parallel locking and incremental resizing.
 
 ## Extendiable Hashing
 
-Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  Its size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode.  The number of bits called the depth of  bucket.  The actual data are stored on one of the buckets.   One bucket is a small hashtable.  When a Bucket is overflow, a Split needs to be done to resize the storage.
+Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  The array size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode of a key.  The number of bits called the depth of bucket.  A particular key value pair is stored on one of the buckets as a HashEntry.  One bucket is a small hashmap.  When a Bucket is overflow, a Split needs to be done to resize the storage.   During the split, the particular bucket will be locked and the existing entries will be migrated to the new buckets.   Since the bucket size is fixed, the locking period is fairely small.  Another impact of a split operation is Directory may need to be double sized.  Since the Directory size is in O(logN) order, the size typically is fairely small, the Directory resizing operation is also pretty fast.
+
+The following sections describe the detail steps of put/get/remove operation, I will cover the details of Split operation in "put" operation.
 
 ### Operation Steps
 
@@ -101,11 +100,11 @@ The following is the steps of remove(K) operation:
 
 # Implementation Details
 
-*This implementation packaged in joyfulmonster.zip focus on implementing the core algorithm of the extendible hashing.  The org.joyfulmonster.util.ConcurrentExtendiableHashMap API definition was borrowed from java.util.concurrent.ConcurrentMap, but I didn't try to do full implementation of ConcurrentMap*
+*This implementation packaged in joyfulmonster.zip focus on implementing the core algorithm of the extendible hashing.  The org.joyfulmonster.util.ConcurrentExtendiableHashMap API definition was influenced by java.util.concurrent.ConcurrentMap API, but I didn't try to do full implementation of java.util.concurrent.ConcurrentMap*
 
 ## package structure
 
-*Source Code*
+**Source Code**
 
 * src\main\java\org\joyfulmonster\util\ConcurrentExtendiableHashMap.java
 * src\main\java\org\joyfulmonster\util\internal\ConcurrentExtendiableHashMapImpl.java
@@ -117,7 +116,7 @@ The following is the steps of remove(K) operation:
 * src\main\java\org\joyfulmonster\util\internal\HashStrategy.java
 * src\main\java\org\joyfulmonster\util\internal\LinearProbingBucketImpl.java
 
-**Note**
+*Note*
 * ConcurrentExtendiableHashMap.java is the proxy class to the actual implementation.
 * ConcurrentExtendiableHashMapImpl.java is the actual implementation entrypoint.   It holds of the reference to Directory and * coordinate the execution steps stated above for different operations.
 * Directory.java is an AtomicReference to a AtomicReferenceArray of Buckets.   So the Directory object can be shared across multiple thread.   The Bucket array maybe updated atomiclly. 
@@ -127,22 +126,22 @@ The following is the steps of remove(K) operation:
 * HashStrategy.java captures different hash functions.
 * HashEntry.java represents one entry that stores in a Bucket.
 
-*Test Code*
+**Test Code**
 
 * src\test\java\org\joyfulmonster\util\BasicTest.java
 * src\test\java\org\joyfulmonster\util\ConcurrencyTest.java
 * src\test\java\org\joyfulmonster\util\RandomStringSet.java
 
-**Note**
+*Note*
 * BasicTest.java is a list of basic functional test that are not parallel.
 * ConcurrencyTest.java is a list of tests that spawning multiple threads to execute parallel operations.
 
-*Document*
+**Document**
 
 * doc\README.md  -> this file
 * doc\README.pdf  -> the printout of this file
 
-*Build*
+**Build**
 
 The project is built with gradle.
 
