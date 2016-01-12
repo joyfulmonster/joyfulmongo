@@ -51,7 +51,7 @@ There are a lot methmatical research on how to build a high efficient evenly dis
 
 Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  Its size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode.  The number of bits called the depth of  bucket.  The actual data are stored on one of the buckets.   One bucket is a small hashtable.   When a Bucket is overflow, a Split needs to be done to resize the storage.
 
-The following is a pseudocode of put(K, V) operation:
+The following is the steps of put(K, V) operation:
 
 ```
 1. get hashcode of K and apply hash function to the hashcode to ensure even distribution
@@ -70,7 +70,7 @@ The following is a pseudocode of put(K, V) operation:
 5. unlock the Bucket
 ```
 
-The following is a pseudocode of get(K) operation:
+The following is the steps of get(K) operation:
 
 ```
 1. get hashcode of K and apply hash function to the hashcode to ensure even distribution
@@ -78,6 +78,20 @@ The following is a pseudocode of get(K) operation:
 3. get entry of K from bucket
 ```
 
+The following is the steps of remove(K) operation:
+
+```
+1. get hashcode of K and apply hash function to the hashcode to ensure even distribution
+2. ask Directory for the Bucket maps to hashcode
+3. lock the Bucket
+4. try to find the entry of K
+4.1 if found, set the value of K to null
+4.2 if not found, ignore the operation
+5. unlock the Bucket
+```
+
 # Implementation Details
 
-# Future
+
+
+# Future Improvement
