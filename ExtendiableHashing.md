@@ -161,5 +161,5 @@ The following are several future improvements in my mind:
 * Make the class implement java.util.concurrent.ConcurrentMap
 * Extendible hashing may scale out incrementally pretty well, however, it does not scale down.   Provided there are such demand, it is interesting to research how to scale down.
 * More testing: 
-** I did not find a deterministic way to discover the contention condition in highly parallel environment.  What I did was to stress the parallel operations in many rounds.   There certainly maybe some scenarios missing.  Advises are very welcome.
-** Careful measure the performance in different kinds of work load.
+  * I did not find a deterministic way to discover the contention condition in highly parallel environment.  What I did was to stress the parallel operations in many rounds.   There certainly maybe some scenarios missing.  Advises are very welcome.
+  * Careful measure the performance in different kinds of work load.
