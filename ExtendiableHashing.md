@@ -54,21 +54,29 @@ Extendible hashing uses a Directory to manage a list of Buckets.  A Directory co
 The following is a pseudocode of put(K, V) operation:
 
 ```
-The split operation does the following:
-
-* Allocate two new buckets.  Typically a bucket has small memory footprint, the allocation can be easily satisfied
-* Mark the old bucket invalid and disallow further write
-* Spread the old bucket entries into the two new buckets
-* Lock the Directory
-* If the new bucket local depth outgrow the depth of the Directory, then double the Directory size and rewire the existing bucket pointers to teh new Directory.
-* Register the two new buckets.
-* Unlock the Directory
-
+1. get hashcode of K and apply hash function to the hashcode to ensure even distribution
+2. ask Directory for the Bucket maps to hashcode
+3. lock the Bucket
+4. try to put K,V to the Bucket
+4.1  if Bucket is overflow do the Bucket split
+4.1.1  Allocate two new buckets.  Typically a bucket has small memory footprint, the allocation can be easily satisfied
+4.1.2  Mark the old bucket invalid and disallow further write
+4.1.3  Spread the old bucket entries into the two new buckets
+4.1.4  put the new pair (K,V) into the one of the two new buckets.
+4.1.5  Lock the Directory
+4.1.6  If the new bucket local depth outgrow the depth of the Directory, then double the Directory size and rewire the existing bucket pointers to teh new Directory.
+4.1.7  Register the two new buckets.
+4.1.8  Unlock the Directory
+5. unlock the Bucket
 ```
 
+The following is a pseudocode of get(K) operation:
 
-
-
+```
+1. get hashcode of K and apply hash function to the hashcode to ensure even distribution
+2. ask Directory for the Bucket maps to hashcode
+3. get entry of K from bucket
+```
 
 # Implementation Details
 
