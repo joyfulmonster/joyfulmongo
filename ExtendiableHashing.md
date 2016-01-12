@@ -1,10 +1,20 @@
-# Problem Description
+# Requirements
 
-The exercise requests to implement an in memory hashmap that put and read String/String type Key Value pairs.  
+Implement an in-memory hashmap that put and read Key Value pairs.  It should be highly scalable and safe.
 
 # Analysis
 
-HashMap is a well known data structure that provides O(1) read/write performance.  Java JDK provides three implemenations:
+## Components of HashMap
+
+HashMap is a well known data structure that provides O(1) read/write performance.  There are three main components for a hashmap:
+
+* hash function
+* collision resolution
+* storage resizing
+
+## On the shelf implemenations
+
+Java JDK provides three implemenations:
 
 java.util.HashMap
 java.util.HashTable
