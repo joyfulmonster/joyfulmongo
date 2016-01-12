@@ -12,13 +12,20 @@ HashMap is a well known data structure that provides O(1) read/write performance
 * collision resolution
 * storage resizing
 
-## On the shelf implemenations
+## Standard Implemenations
 
 Java JDK provides three implemenations:
 
-java.util.HashMap
-java.util.HashTable
-java.util.concurrent.ConcurrentHashMap
+* java.util.HashMap
+* java.util.Hashtable
+* java.util.concurrent.ConcurrentHashMap
+
+Issues with these implemenations:
+
+
+
+* java.util.HashMap is not thread safe.
+* java.util.Hashtable is
 
 
 # Design 
