@@ -1,3 +1,5 @@
+@Weifeng Bao 01/12/2016
+
 # Requirements
 
 Implement an in-memory hashmap that put and read Key Value pairs.  It should be highly scalable and safe.
