@@ -53,9 +53,9 @@ Extendible hashing uses a Directory to manage a list of Buckets.  A Directory co
 
 When a Bucket is overflow, a Split needs to be done to resize the storage.  The split operations do the following:
 
-* Allocate two new buckets.  Typically a bucket has small memory footprint, the allocation can be easily satisfied.
+* Allocate two new buckets.  Typically a bucket has small memory footprint, the allocation can be easily satisfied
 * Mark the old bucket invalid and disallow further write
-** Spread the old bucket entries into the two new buckets.
+** Spread the old bucket entries into the two new buckets
 ** Lock the Directory
 *** If the new bucket local depth outgrow the depth of the Directory, then double the Directory size and rewire the existing bucket pointers to teh new Directory.
 *** Register the two new buckets.
