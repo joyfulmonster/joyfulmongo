@@ -49,8 +49,8 @@ There are a lot methmatical research on how to build a high efficient evenly dis
 
 The idea is to leverage the extendiable hashing algorithm (https://en.wikipedia.org/wiki/Extendible_hashing) to manage a collection of small buckets to provide:
 
-1. fine-grained parallel locking 
-2. incremental resizing
+* fine-grained parallel locking 
+* incremental resizing
 
 ## Extendiable Hashing
 
@@ -103,22 +103,45 @@ The following is the steps of remove(K) operation:
 
 ## package structure
 
-Source Code:
+*Source Code*
 
-src\main\java\org\joyfulmonster\util\ConcurrentExtendiableHashMap.java
-src\main\java\org\joyfulmonster\util\internal\ConcurrentExtendiableHashMapImpl.java
-src\main\java\org\joyfulmonster\util\internal\Bucket.java
-src\main\java\org\joyfulmonster\util\internal\BucketFactory.java
-src\main\java\org\joyfulmonster\util\internal\BucketOverflowError.java
-src\main\java\org\joyfulmonster\util\internal\Directory.java
-src\main\java\org\joyfulmonster\util\internal\HashEntry.java
-src\main\java\org\joyfulmonster\util\internal\HashStrategy.java
-src\main\java\org\joyfulmonster\util\internal\LinearProbingBucketImpl.java
+* src\main\java\org\joyfulmonster\util\ConcurrentExtendiableHashMap.java
+* src\main\java\org\joyfulmonster\util\internal\ConcurrentExtendiableHashMapImpl.java
+* src\main\java\org\joyfulmonster\util\internal\Bucket.java
+* src\main\java\org\joyfulmonster\util\internal\BucketFactory.java
+* src\main\java\org\joyfulmonster\util\internal\BucketOverflowError.java
+* src\main\java\org\joyfulmonster\util\internal\Directory.java
+* src\main\java\org\joyfulmonster\util\internal\HashEntry.java
+* src\main\java\org\joyfulmonster\util\internal\HashStrategy.java
+* src\main\java\org\joyfulmonster\util\internal\LinearProbingBucketImpl.java
 
-Test Code:
+ConcurrentExtendiableHashMap.java is the proxy class to the actual implementation.
+ConcurrentExtendiableHashMapImpl.java is the actual implementation entrypoint.   It holds of the reference to Directory and coordinate the execution steps stated above for different operations.
+Directory.java is the 
 
-src\test\java\org\joyfulmonster\util\BasicTest.java
-src\test\java\org\joyfulmonster\util\ConcurrencyTest.java
-src\test\java\org\joyfulmonster\util\RandomStringSet.java
+*Test Code*
+
+* src\test\java\org\joyfulmonster\util\BasicTest.java
+* src\test\java\org\joyfulmonster\util\ConcurrencyTest.java
+* src\test\java\org\joyfulmonster\util\RandomStringSet.java
+
+*Document*
+
+* doc\README.md  -> this file
+* doc\README.pdf  -> the printout of this file
+
+*Build*
+
+The project is built with gradle.
+
+* build.gradle
+* gradle
+* gradlew
+* gradlew.bat
+* settings.gradle
+
+In order to compile and run test do the following:
+
+> gradlew build test
 
 # Future Improvement
