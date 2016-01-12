@@ -115,15 +115,25 @@ The following is the steps of remove(K) operation:
 * src\main\java\org\joyfulmonster\util\internal\HashStrategy.java
 * src\main\java\org\joyfulmonster\util\internal\LinearProbingBucketImpl.java
 
-ConcurrentExtendiableHashMap.java is the proxy class to the actual implementation.
-ConcurrentExtendiableHashMapImpl.java is the actual implementation entrypoint.   It holds of the reference to Directory and coordinate the execution steps stated above for different operations.
-Directory.java is the 
+**Note**
+* ConcurrentExtendiableHashMap.java is the proxy class to the actual implementation.
+* ConcurrentExtendiableHashMapImpl.java is the actual implementation entrypoint.   It holds of the reference to Directory and * coordinate the execution steps stated above for different operations.
+* Directory.java is an AtomicReference to a AtomicReferenceArray of Buckets.   So the Directory object can be shared across multiple thread.   The Bucket array maybe updated atomiclly. 
+* Bucket.java defines the interface a bucket, there maybe various implementations.
+* LinearProbingBucketImpl.java is a hashmap implementation of Bucket, it uses Linear Probing collision resolution.
+* BucketFactory.java provides the facility to manage and replace different Bucket implementation without impact Directory and hashmap implemenation.
+* HashStrategy.java captures different hash functions.
+* HashEntry.java represents one entry that stores in a Bucket.
 
 *Test Code*
 
 * src\test\java\org\joyfulmonster\util\BasicTest.java
 * src\test\java\org\joyfulmonster\util\ConcurrencyTest.java
 * src\test\java\org\joyfulmonster\util\RandomStringSet.java
+
+**Note**
+* BasicTest.java is a list of basic functional test that are not parallel.
+* ConcurrencyTest.java is a list of tests that spawning multiple threads to execute parallel operations.
 
 *Document*
 
@@ -145,3 +155,11 @@ In order to compile and run test do the following:
 > gradlew build test
 
 # Future Improvement
+
+The following are several future improvements in my mind:
+
+* Make the class implement java.util.concurrent.ConcurrentMap
+* Extendible hashing may scale out incrementally pretty well, however, it does not scale down.   Provided there are such demand, it is interesting to research how to scale down.
+* More testing: 
+- I did not find a deterministic way to discover the contention condition in highly parallel environment.  What I did was to stress the parallel operations in many rounds.   There certainly maybe some scenarios missing.  Advises are very welcome.
+- 
