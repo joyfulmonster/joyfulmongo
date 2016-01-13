@@ -43,7 +43,9 @@ In the environment that there are huge amount of data and highly concurrent acce
 
 # Design 
 
-There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will go ahead borrow the mature algorithm from JDK implementation.  The focus of this design is to provide a implementation that meet following goals by tweaking the hashmap stoage resizing mechanism.
+There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will go ahead borrow the mature algorithm from JDK implementation.  The collision resolution algorithm I used is Linear Probing.
+
+The focus of this design is to provide a implementation by improving the stoage resizing mechanism to meet following goals:
 
 * dynamically scalable
 * highly concurrent and thread safe
