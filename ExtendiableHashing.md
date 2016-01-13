@@ -28,32 +28,37 @@ Java JDK provides three implemenations:
 
 * java.util.HashMap is not thread safe.  It can not be directly used in multiple threading scenario without external coordination.
 * java.util.Hashtable is thread safe implemenation.  It provides Object wide lock when performing put/remove.  
-* java.util.concurrent.ConcurrentHashMap is thread safe implementation and provides better concurrency.  It takes a parameter to configure the number of Segments when constructing the object.  Each Segment is concurrent access unit, will be locked during put/remove operation.  The get operation is unblocked.
+* java.util.concurrent.ConcurrentHashMap is thread safe implementation and provides better concurrency.  It takes a parameter to configure the number of Segments when constructing the object.  Each Segment is concurrent accessing unit, will be locked during put/remove operations.  The get operation is unblocked.   
 
 #### Scalability and Availability
 
-In the situation that there are huge amount of data and highly concurrent access, the above implementation may suffer from the following perspectives:
+In the environment that there are huge amount of data and highly concurrent access, the above implementations may suffer from the following perspectives:
 
 * java.util.Hashtable may suffers from two sides
-** it uses global locker
-** it uses dynamic resizing that doubles the memory storage whenever load factor is reached.   Dynamic resizing may cause two trouble
-*** it needs to copy the whole old array into the new array, during the copy the whole table will be locked and not available to write.
-*** memory waste.  The memory size is doubled from previous size for every resizing, the bigger the data set is, the more extra memory is needed during resizing.
-* java.util.concurrent.ConcurrentHashMap has a static configuration of the number of Segments.  Each Segment is a sub hashtable and will also do dynamic resizing.   It needs a very careful upfront planning.
+** it uses global locker during write operations.
+** it uses dynamic resizing that doubles the memory storage whenever load factor is reached.  Dynamic resizing may cause two issues
+*** it needs to copy the whole old array into a new double sized array, during the copy the whole table will be locked and not available to write.   When there are millions of entries in the table, the copy operation may be costly and halt the concurrent operations.
+*** memory waste.  The memory size is doubled from previous size for every resizing, the bigger the data set is, the more extra memory is needed during resizing.  When there are millions millions of entries in the table, there are higher chance to fail to allocate new big chunk of memory.
+* java.util.concurrent.ConcurrentHashMap has a static configuration of the number of Segments.  Each Segment is a sub hashmap and will also do dynamic resizing.   It needs a very careful upfront planning to get optimial performance from ConcurrentHashMap.
 
 # Design 
 
-There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will not touch that.  The focus of this design is to provide a implementation that meet following goals by tweaking the hashmap stoage resizing mechanism.
+There are a lot methmatical research on how to build a high efficient evenly distributed hash function, I will go ahead borrow the mature algorithm from JDK implementation.  The focus of this design is to provide a implementation that meet following goals by tweaking the hashmap stoage resizing mechanism.
 
 * dynamically scalable
 * highly concurrent and thread safe
 * highly available
 
-The idea is to leverage the extendiable hashing algorithm (https://en.wikipedia.org/wiki/Extendible_hashing) to manage a collection of small buckets to provide fine-grained parallel locking and incremental resizing.
+The idea is to leverage the extendiable hashing algorithm (https://en.wikipedia.org/wiki/Extendible_hashing) to manage a collection of small buckets to provide:
+
+* fine-grained parallel locking to improve parallel accessing throughput
+* incremental resizing that has minimal impact to the over performance
 
 ## Extendiable Hashing
 
-Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  The array size must be in a power of 2 value.  The array index maps to the lower bits of the hashcode of a key.  The number of bits called the depth of bucket.  A particular key value pair is stored on one of the buckets as a HashEntry.  One bucket is a small hashmap.  When a Bucket is overflow, a Split needs to be done to resize the storage.   During the split, the particular bucket will be locked and the existing entries will be migrated to the new buckets.   Since the bucket size is fixed, the locking period is fairely small.  Another impact of a split operation is Directory may need to be double sized.  Since the Directory size is in O(logN) order, the size typically is fairely small, the Directory resizing operation is also pretty fast.
+Extendible hashing uses a Directory to manage a list of Buckets.  A Directory consists of an array of pointers to Buckets.  The array size must be in a power of 2 value.  The array index maps to the lower bits of the key hashcode.  The number of bits called the depth of bucket.  
+
+A particular key value pair is stored on one of the buckets as a HashEntry.  One bucket is a small hashmap.  When a Bucket is overflow, a Split needs to be done to resize the storage.   During the split, the overflowed bucket will be locked and the existing entries will be migrated to the new buckets.  Since the bucket size is fixed, the locking period is fairely small.  Another impact of a split operation is that Directory may need to be double sized.  Since the Directory size is in O(logN) order, the size typically is fairely small, the Directory resizing operation is also pretty fast.
 
 The following sections describe the detail steps of put/get/remove operation, I will cover the details of Split operation in "put" operation.
 
@@ -160,7 +165,8 @@ In order to compile and run test do the following:
 The following are several future improvements in my mind:
 
 * Make the class implement java.util.concurrent.ConcurrentMap
-* Extendible hashing may scale out incrementally pretty well, however, it does not scale down.   Provided there are such demand, it is interesting to research how to scale down.
-* More testing: 
+* The LinearProbingBucketImpl uses linear probing collision resolution algorithm, it may suffer from key clustering issue.  Different flavor of Bucket implementation maybe valuable in some environments or usecases.
+* More testing are needed:
   * I did not find a deterministic way to discover the contention condition in highly parallel environment.  What I did was to stress the parallel operations in many rounds.   There certainly maybe some scenarios missing.  Advises are very welcome.
   * Careful measure the performance in different kinds of work load.
+* Extendible hashing scales out incrementally pretty well, however, it does not scale down.  Provided there are such usecase, it is interesting to research how to scale down.
