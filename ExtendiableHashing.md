@@ -35,10 +35,10 @@ Java JDK provides three implemenations:
 In the environment that there are huge amount of data and highly concurrent access, the above implementations may suffer from the following perspectives:
 
 * java.util.Hashtable may suffers from two sides
-** it uses global locker during write operations.
-** it uses dynamic resizing that doubles the memory storage whenever load factor is reached.  Dynamic resizing may cause two issues
-*** it needs to copy the whole old array into a new double sized array, during the copy the whole table will be locked and not available to write.   When there are millions of entries in the table, the copy operation may be costly and halt the concurrent operations.
-*** memory waste.  The memory size is doubled from previous size for every resizing, the bigger the data set is, the more extra memory is needed during resizing.  When there are millions millions of entries in the table, there are higher chance to fail to allocate new big chunk of memory.
+  * it uses global locker during write operations.
+  * it uses dynamic resizing that doubles the memory storage whenever load factor is reached.  Dynamic resizing may cause two issues
+    * it needs to copy the whole old array into a new double sized array, during the copy the whole table will be locked and not available to write.   When there are millions of entries in the table, the copy operation may be costly and halt the concurrent operations.
+    * memory waste.  The memory size is doubled from previous size for every resizing, the bigger the data set is, the more extra memory is needed during resizing.  When there are millions millions of entries in the table, there are higher chance to fail to allocate new big chunk of memory.
 * java.util.concurrent.ConcurrentHashMap has a static configuration of the number of Segments.  Each Segment is a sub hashmap and will also do dynamic resizing.   It needs a very careful upfront planning to get optimial performance from ConcurrentHashMap.
 
 # Design 
