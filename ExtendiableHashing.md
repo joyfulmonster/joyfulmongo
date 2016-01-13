@@ -125,9 +125,9 @@ The following is the steps of remove(K) operation:
 
 *Note*
 * ConcurrentExtendiableHashMap.java is the proxy class to the actual implementation.
-* ConcurrentExtendiableHashMapImpl.java is the actual implementation entrypoint.   It holds of the reference to Directory and * coordinate the execution steps stated above for different operations.
+* ConcurrentExtendiableHashMapImpl.java is the actual implementation entrypoint.   It holds of the reference to Directory and  coordinate the execution steps stated above for different operations.
 * Directory.java is an AtomicReference to a AtomicReferenceArray of Buckets.   So the Directory object can be shared across multiple thread.   The Bucket array maybe updated atomiclly. 
-* Bucket.java defines the interface a bucket, there maybe various implementations.
+* Bucket.java defines the interface a Bucket, there maybe various implementations.
 * LinearProbingBucketImpl.java is a hashmap implementation of Bucket, it uses Linear Probing collision resolution.
 * BucketFactory.java provides the facility to manage and replace different Bucket implementation without impact Directory and hashmap implemenation.
 * HashStrategy.java captures different hash functions.
