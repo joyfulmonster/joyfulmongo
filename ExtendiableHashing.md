@@ -104,6 +104,13 @@ The following is the steps of remove(K) operation:
 4.2 if not found, ignore the operation
 5. unlock the Bucket
 ```
+## Worst case analysis and mitigation
+
+The worst case is all the entries falls into one buckets, and the bucket acts as a Hashtable.  It may happen if the bucket size is configured very big or the hashcode falls into certain pattern.   In order to mitigate the worst case, the following were done in the implementation:
+
+* apply additional scramble hash function to ensure the hashcode is evenly distributed
+* minimal bucket size is 2, default bucket size is 8
+* the bucket size and directory size may need to be tuned for different envionments or usecases.
 
 # Implementation Details
 
@@ -165,14 +172,6 @@ The project is built with gradle.
 In order to compile and run test do the following:
 
 > gradlew build test
-
-## Worst case analysis
-
-The worst case is all the entries falls into one buckets, and the bucket acts as a Hashtable.  It may happen if the bucket size is configured very big or the hashcode falls into certain pattern.   In order to mitigate the worst case, the following were done in the implementation:
-
-* apply additional scramble hash function to ensure the hashcode is evenly distributed
-* minimal bucket size is 2, default bucket size is 8
-* it is recommended to careful pick up bucket size for different scenarios.
 
 # Future Improvement
 
