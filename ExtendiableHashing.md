@@ -117,11 +117,13 @@ The following is the steps of remove(K) operation:
 * src\main\java\org\joyfulmonster\util\internal\ConcurrentExtendiableHashMapImpl.java
 * src\main\java\org\joyfulmonster\util\internal\Bucket.java
 * src\main\java\org\joyfulmonster\util\internal\BucketFactory.java
+* src\main\java\org\joyfulmonster\util\internal\BucketMetricsSupport.java
 * src\main\java\org\joyfulmonster\util\internal\BucketOverflowError.java
 * src\main\java\org\joyfulmonster\util\internal\Directory.java
 * src\main\java\org\joyfulmonster\util\internal\HashEntry.java
 * src\main\java\org\joyfulmonster\util\internal\HashStrategy.java
 * src\main\java\org\joyfulmonster\util\internal\LinearProbingBucketImpl.java
+* src\main\java\org\joyfulmonster\util\internal\MetricsSupport.java
 
 *Note*
 * ConcurrentExtendiableHashMap.java is the proxy class to the actual implementation.
@@ -130,8 +132,10 @@ The following is the steps of remove(K) operation:
 * Bucket.java defines the interface a Bucket, there maybe various implementations.
 * LinearProbingBucketImpl.java is a hashmap implementation of Bucket, it uses Linear Probing collision resolution.
 * BucketFactory.java provides the facility to manage and replace different Bucket implementation without impact Directory and hashmap implemenation.
+* BucketMetricsSupport.java defines a list of methods that measure the performance metrics of a bucket
 * HashStrategy.java captures different hash functions.
 * HashEntry.java represents one entry that stores in a Bucket.
+* MetricsSupport.java defines a list of methods that measure the performance metrics of a hashmap
 
 **Test Code**
 
